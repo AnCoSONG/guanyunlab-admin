@@ -4,7 +4,7 @@ import { App, inject } from 'vue';
 export const axiosSymbol = Symbol()
 
 export const request = axios.create({
-    baseURL: 'http://localhost:3000/gylab-api',
+    baseURL: import.meta.env.VITE_API_URL,
     timeout: 10000,
     withCredentials: true,
 });
