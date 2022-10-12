@@ -2,6 +2,7 @@ import { ElMessage } from "element-plus";
 import { createRouter, createWebHistory } from "vue-router";
 import { apiCheck } from "../api";
 import NProgress from "nprogress";
+import { useUserStore } from "../stores";
 
 const router = createRouter({
     history: createWebHistory("/gylab-admin/"),
@@ -71,10 +72,16 @@ router.beforeEach(async (to, from, next) => {
     NProgress.start();
     if (to.matched.some((route) => route.meta.auth === true)) {
         const data = await apiCheck();
-        if(!data) {
+        if (!data) {
             ElMessage.error("请先登录");
             next('/login')
         } else {
+            const userStore = useUserStore()
+            userStore.user = data
+            if (!userStore.isBack) {
+                userStore.isBack = true
+                ElMessage.success(`欢迎回来 ${userStore.user.username}`)
+            }
             next()
         }
     } else {

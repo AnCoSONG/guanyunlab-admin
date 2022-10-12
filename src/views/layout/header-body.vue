@@ -1,7 +1,7 @@
 <template>
     <div>
         <header>
-            <div class="title">Guanyun Lab Admin / {{header}}</div>
+            <div class="title">Guanyun Lab Admin » {{header}}</div>
             <div class="status" v-if="userStore.user.id">
                 <span class="username">
                     {{userStore.user.username}}&nbsp;
@@ -40,6 +40,13 @@ header {
     display: flex;
     flex-flow: nowrap row;
     justify-content: space-between;
+    align-items: center;
+
+    @media (max-width: 400px) {
+        flex-flow: nowrap column;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
 
     .title {
         text-transform: capitalize;

@@ -1,11 +1,12 @@
 <template>
     <HeaderBody :header="'Login'">
-        <el-form :label-position="'top'" label-width="100px" :model="loginForm" style="max-width: 360px" @keydown.enter="login">
+        <el-form :label-position="'top'" label-width="100px" :model="loginForm" style="max-width: 360px"
+            @keydown.enter="login">
             <el-form-item label="Username">
-                <el-input v-model="loginForm.username" class="inputer" ref="usernameInputRef"/>
+                <el-input v-model="loginForm.username" class="inputer" ref="usernameInputRef" />
             </el-form-item>
             <el-form-item label="Password">
-                <el-input v-model="loginForm.password" class="inputer" type="password" show-password/>
+                <el-input v-model="loginForm.password" class="inputer" type="password" show-password />
             </el-form-item>
             <el-form-item label="Captcha">
                 <div class="captcha">
@@ -62,7 +63,10 @@ const generateCaptcha = () => {
 const res = await apiCheck()
 if (res) {
     userStore.user = res;
-    ElMessage.success(`欢迎回来 ${userStore.user.username}`);
+    if (!userStore.isBack) {
+        userStore.isBack = true
+        ElMessage.success(`欢迎回来 ${userStore.user.username}`)
+    }
     router.push('/')
 }
 

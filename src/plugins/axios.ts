@@ -33,6 +33,8 @@ request.interceptors.request.use(
 
 request.interceptors.response.use(
     (res) => {
+        // 打包时注释掉
+        console.log(`The results of ${res.request.responseURL}`, '\n', res.data)
         return res;
     },
     (err) => {

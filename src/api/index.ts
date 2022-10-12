@@ -12,7 +12,6 @@ export const apiLogin = async (username: string, password: string) => {
         return null;
     })
     if (res) {
-        console.log(res)
         return res.data;
     } else {
         return null;
@@ -25,7 +24,6 @@ export const apiCheck = async () => {
         return null;
     })
     if (res) {
-        console.log(res);
         return res.data;
     } else {
         return null;
