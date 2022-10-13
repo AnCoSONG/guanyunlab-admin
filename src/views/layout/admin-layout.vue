@@ -2,7 +2,20 @@
     <HeaderBody :header="(route.name as string)">
         <!-- dasda -->
         <AsideMain :active-name="(route.name as string)">
-            <router-view></router-view>
+            <RouterView v-slot="{ Component }">
+                <template v-if="Component">
+                    <KeepAlive exclude="login">
+                        <Suspense>
+                            <component :is="Component"></component>
+                            <template #fallback>
+                                <div class="loader">
+                                    Loading ... / 加载中 ...
+                                </div>
+                            </template>
+                        </Suspense>
+                    </KeepAlive>
+                </template>
+            </RouterView>
         </AsideMain>
     </HeaderBody>
 </template>
