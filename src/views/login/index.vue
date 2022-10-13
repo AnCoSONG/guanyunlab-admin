@@ -95,7 +95,8 @@ const login = async () => {
         userStore.user.id = loginRes.id
         userStore.user.username = loginForm.username
         localStorage.setItem('token', loginRes.token)
-        // ElMessage.success('登录成功');
+        ElMessage.success('登录成功');
+        userStore.isBack = true;
         setTimeout(() => {
             router.push('home')
         }, 0)
