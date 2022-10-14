@@ -24,7 +24,25 @@ const controllers = ['Home', 'Publication', 'Project', 'Member', 'News', 'Image'
 <style lang="scss" scoped>
 .aside-main {
     display: grid;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 160px 1fr;
     grid-column-gap: 20px;
+
+    @media (max-width: 700px) {
+        grid-template-columns: 100px 1fr;
+    }
+
+    @media (max-width: 425px) {
+        grid-template-columns: 1fr;
+        
+        aside {
+            display: flex;
+            flex-flow: wrap row;
+
+            > * {
+                margin-right: 20px;
+            }
+        }
+        
+    }
 }
 </style>
