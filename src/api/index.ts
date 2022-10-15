@@ -65,7 +65,7 @@ export const apiUploadImg = async (file: File, onProgressCb: any) => {
 
 
 export const apiGetMetadata = async () => {
-    const res = await request.get<Metadata[]>('/metadata/').catch(err => {
+    const res = await request.get<Metadata[]>('/metadata').catch(err => {
         console.log(err);
         return null;
     })
@@ -74,5 +74,65 @@ export const apiGetMetadata = async () => {
         throw new Error("获取失败");
     }
     return res.data[0];
+}
 
+export const apiUpdateMetadata = async ( metadata: Partial<Metadata>) => {
+    const res = await request.patch<Metadata>('/metadata/' + metadata.id!, metadata).catch(err => {
+        console.log(err);
+        return null;
+    })
+    if (!res) {
+        ElMessage.error("更新元数据失败");
+        throw new Error("更新失败");
+    }
+    return res.data;
+}
+
+export const apiGetPublications = async () => {
+    const res = await request.get<Publication[]>('/paper').catch(err => {
+        console.log(err);
+        return null;
+    })
+    if (!res) {
+        ElMessage.error("获取文章失败");
+        throw new Error("获取失败");
+    }
+    return res.data;
+
+}
+
+export const apiCreatePublication = async (publication: Omit<Publication, 'id'>) => {
+    const res = await request.post<Publication>('/paper', publication).catch(err => {
+        console.log(err);
+        return null;
+    })
+    if (!res) {
+        ElMessage.error("创建论文失败");
+        throw new Error("创建失败");
+    }
+    return res.data;
+}
+
+export const apiUpdatePublication = async (id: string, publication: Partial<Omit<Publication, 'id'>>) => {
+    const res = await request.patch<Publication>('/paper/' + id, publication).catch(err => {
+        console.log(err);
+        return null;
+    })
+    if (!res) {
+        ElMessage.error("更新论文失败");
+        throw new Error("更新失败");
+    }
+    return res.data;
+}
+
+export const apiDeletePublication = async (id: string) => {
+    const res = await request.delete('/paper/' + id).catch(err => {
+        console.log(err);
+        return null;
+    })
+    if (!res) {
+        ElMessage.error("删除论文失败");
+        throw new Error("删除失败");
+    }
+    return res.data;
 }

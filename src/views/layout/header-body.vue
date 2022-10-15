@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="body">
         <header>
             <div class="title">Guanyun Lab Admin » {{header}}</div>
             <div class="status" v-if="userStore.user.id">
@@ -33,7 +33,11 @@ const logout = () => {
 }
 </script>
 <style lang="scss" scoped>
-header {
+.body {
+    width: 100%;
+    position: relative;
+
+    header {
     font-size: 20px;
     font-weight: 500;
     // color: #d6d6d6;
@@ -74,5 +78,10 @@ header {
 
 main {
     padding: 60px 0px;
+    box-sizing: border-box;
+    width: 100%;
+    position: relative;
 }
+}
+
 </style>

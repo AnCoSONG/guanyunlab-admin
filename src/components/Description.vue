@@ -20,6 +20,7 @@
     border-radius: 4px;
     margin-bottom: 20px;
     width: 100%;
+    box-sizing: border-box;
 
     @media (max-width: 425px) {
         padding-left: 24px;

@@ -8,3 +8,11 @@ export const useUserStore = defineStore('user', {
     }
   },
 })
+
+export const useMetadataStore = defineStore('metadata', {
+  state: () => {
+    return {
+        id: '' as string
+    }
+  }
+})

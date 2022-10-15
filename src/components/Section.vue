@@ -24,8 +24,8 @@ defineProps<{ title: string }>()
 
     .title {
         // font-size: 1.5rem;
-        font-weight: 500;
-        margin-bottom: 1rem;
+        // font-weight: 500;
+        margin-bottom: 12px;
     }
 
     .controls {
@@ -39,7 +39,8 @@ defineProps<{ title: string }>()
     }
 
     .content {
-        
+        width: 100%;
+        position: relative;
     }
 }
 </style>

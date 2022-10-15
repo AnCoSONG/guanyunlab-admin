@@ -1,12 +1,13 @@
 <template>
-<div class="aside-main">
-    <aside>
-        <TextButton :active="item.toLowerCase() == activeName" @click="routeTo(item.toLowerCase())" v-for="item, index in controllers">{{item}}</TextButton>
-    </aside>
-    <main>
-        <slot></slot>
-    </main>
-</div>
+    <div class="aside-main">
+        <aside>
+            <TextButton :active="item.toLowerCase() == activeName" @click="routeTo(item.toLowerCase())"
+                v-for="item, index in controllers">{{item}}</TextButton>
+        </aside>
+        <div class="main">
+            <slot></slot>
+        </div>
+    </div>
 </template>
 <script setup lang='ts'>
 import TextButton from '../../components/TextButton.vue';
@@ -19,12 +20,14 @@ defineProps<{
     activeName: string;
 }>()
 
-const controllers = ['Home', 'Publication', 'Project', 'Member', 'News', 'Image'];
+const controllers = ['Home', 'Metadata', 'Publication', 'Project', 'Member', 'News', 'Image'];
 </script>
 <style lang="scss" scoped>
 .aside-main {
+    position: relative;
+    width: 100%;
     display: grid;
-    grid-template-columns: 160px 1fr;
+    grid-template-columns: 160px minmax(0, 1fr); // minmax(0, 1fr) means the main part will take all the rest space
     grid-column-gap: 20px;
 
     @media (max-width: 700px) {
@@ -33,16 +36,23 @@ const controllers = ['Home', 'Publication', 'Project', 'Member', 'News', 'Image'
 
     @media (max-width: 425px) {
         grid-template-columns: 1fr;
-        
+
         aside {
             display: flex;
             flex-flow: wrap row;
 
-            > * {
+            >* {
                 margin-right: 20px;
             }
         }
-        
+
+
+    }
+
+    .main {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
     }
 }
 </style>
