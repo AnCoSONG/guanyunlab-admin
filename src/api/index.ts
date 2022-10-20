@@ -136,3 +136,51 @@ export const apiDeletePublication = async (id: string) => {
     }
     return res.data;
 }
+
+export const apiGetProjects = async () => {
+    const res = await request.get<Project[]>('/project').catch(err => {
+        console.log(err);
+        return null;
+    })
+    if (!res) {
+        ElMessage.error("获取项目失败");
+        throw new Error("获取失败");
+    }
+    return res.data;
+}
+
+export const apiCreateProject = async (project: Omit<Project, 'id'>) => {
+    const res = await request.post<Project>('/project', project).catch(err => {
+        console.log(err);
+        return null;
+    })
+    if (!res) {
+        ElMessage.error("创建项目失败");
+        throw new Error("创建失败");
+    }
+    return res.data;
+}
+
+export const apiUpdateProject = async (id: string, project: Partial<Omit<Project, 'id'>>) => {
+    const res = await request.patch<Project>('/project/' + id, project).catch(err => {
+        console.log(err);
+        return null;
+    })
+    if (!res) {
+        ElMessage.error("更新项目失败");
+        throw new Error("更新失败");
+    }
+    return res.data;
+}
+
+export const apiDeleteProject = async (id: string) => {
+    const res = await request.delete('/project/' + id).catch(err => {
+        console.log(err);
+        return null;
+    })
+    if (!res) {
+        ElMessage.error("删除项目失败");
+        throw new Error("删除失败");
+    }
+    return res.data;
+}

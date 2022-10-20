@@ -21,3 +21,22 @@ declare type Publication = {
     href: string;
     create_date: string;
 }
+
+declare type Project = {
+    id: string;
+    cn_authors: string;
+    en_authors: string;
+    first_author: string;
+    cn_name: string;
+    en_name: string;
+    short_abstract: string;
+    en_abstract: string;
+    cn_abstract: string;
+    view_count: number;
+    hero_img: string;
+    hypertext: string;
+    imgs: string[];
+    create_date: string;
+    create_date_real: string;
+    update_date: string;
+}
