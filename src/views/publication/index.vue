@@ -1,5 +1,5 @@
 <template>
-    <Section :title="'Publications Table: ' + publications.length">
+    <Section :title="`Publications: ${publications.length}`" no_top_margin>
         <template #controls>
             <el-button type="primary" @click="handleCreate">Create</el-button>
         </template>
@@ -15,7 +15,7 @@
             <el-table-column prop="title" label="Title" width="180" />
             <el-table-column prop="venue" label="Venue" width="180" />
             <el-table-column prop="href" label="Href" width="180" />
-            <el-table-column prop="create_date" label="Create Date" width="180">
+            <el-table-column label="Create Date" width="180">
                 <template #default="data">
                     {{ toLocalTime(data.row.create_date) }}
                 </template>
@@ -29,24 +29,24 @@
         </el-table>
         <Teleport to="body">
             <el-dialog v-model="dialogVisible" :title="textMap[mode]" @close="handleClose">
-                <el-form :model="publicationData" label-width="120px" label-position="left">
-                    <el-form-item label="Title">
+                <el-form ref="publicationForm" :model="publicationData" label-width="120px" label-position="left"
+                    :rules="rules">
+                    <el-form-item label="Title" prop="title">
                         <el-input v-model="publicationData.title" />
                     </el-form-item>
-                    <el-form-item label="Authors">
+                    <el-form-item label="Authors" prop="authors">
                         <el-input v-model="publicationData.authors" />
                     </el-form-item>
-                    <el-form-item label="Venue">
+                    <el-form-item label="Venue" prop="venue">
                         <el-input v-model="publicationData.venue" />
                     </el-form-item>
-                    <el-form-item label="Href">
+                    <el-form-item label="Href" prop="href">
                         <el-input v-model="publicationData.href" />
                     </el-form-item>
-                    <el-form-item label="Image">
+                    <el-form-item label="Image" prop="img">
                         <el-upload :file-list="publicationImgFilelist" list-type="picture-card" :auto-upload="true"
                             action="#" :http-request="uploadImage" :on-success="handleUploadSuccess" accept="image/*"
-                            :on-change="handleUploadChange" :on-remove="handleUploadRemove"
-                            :on-preview="handleUploadPreview">
+                            :on-remove="handleUploadRemove" :on-preview="handleUploadPreview">
                             <el-icon>
                                 <Plus />
                             </el-icon>
@@ -59,9 +59,6 @@
                                 <img :src="previewDialogImageUrl" alt="Preview Image" style="width: 100%" />
                             </el-dialog>
                         </Teleport>
-                    </el-form-item>
-                    <el-form-item label="create_date">
-                        <el-date-picker v-model="publicationData.create_date" type="date" placeholder="Pick a date" />
                     </el-form-item>
                 </el-form>
                 <template #footer>
@@ -79,9 +76,9 @@ import { reactive, ref } from 'vue';
 import { apiGetPublications, apiCreatePublication, apiUpdatePublication, apiDeletePublication } from '../../api';
 import Section from '../../components/Section.vue';
 import { Plus } from '@element-plus/icons-vue'
-import { toLocalTime, uploadImage } from '../../utils'
+import { toLocalTime, uploadImage } from '../../utils';
+import { ElMessage, ElMessageBox, FormInstance, UploadFile, UploadFiles, UploadProps } from 'element-plus';
 import { computed } from '@vue/reactivity';
-import { ElMessage, ElMessageBox, UploadFile, UploadFiles, UploadProps } from 'element-plus';
 
 const publications = reactive<Publication[]>([])
 
@@ -92,8 +89,27 @@ const publicationData = reactive({
     title: '',
     venue: '',
     href: '',
-    create_date: ''
 })
+
+const rules = reactive({
+    title: [
+        { required: true, message: 'Please input title', trigger: 'blur' },
+    ],
+    authors: [
+        { required: true, message: 'Please input authors', trigger: 'blur' },
+    ],
+    venue: [
+        { required: true, message: 'Please input venue', trigger: 'blur' },
+    ],
+    href: [
+        { required: true, message: 'Please input href', trigger: 'blur' },
+    ],
+    img: [
+        { required: true, message: 'Please input img', trigger: 'blur' },
+    ],
+})
+
+const publicationForm = ref<FormInstance>()
 
 // 获取publicationData
 const fetchPublications = async () => {
@@ -110,21 +126,29 @@ const handleCreate = () => {
 
 // 新建论文
 const createPublication = async () => {
-    const data = {
-        img: publicationData.img,
-        authors: publicationData.authors,
-        title: publicationData.title,
-        venue: publicationData.venue,
-        href: publicationData.href,
-        create_date: new Date(publicationData.create_date).toISOString()
-    }
-    console.log('create', data)
-    const createRes = await apiCreatePublication(data)
-    if (createRes) {
-        ElMessage.success('新建成功')
-        await fetchPublications()
-    }
-    dialogVisible.value = false
+    publicationForm.value?.validate(async (valid, fields) => {
+        if (valid) {
+            const data = {
+                img: publicationData.img,
+                authors: publicationData.authors,
+                title: publicationData.title,
+                venue: publicationData.venue,
+                href: publicationData.href,
+            }
+            console.log('create', data)
+            const createRes = await apiCreatePublication(data)
+            if (createRes) {
+                ElMessage.success('新建成功')
+                await fetchPublications()
+                handleClose()
+            }
+        } else {
+            ElMessage.error('Validation failed...Please check form.')
+            console.log('error submit!!', fields)
+            return false
+        }
+    })
+
 }
 
 //  进入编辑模式
@@ -137,31 +161,33 @@ const handleEdit = async (row: Publication) => {
     publicationData.title = row.title
     publicationData.venue = row.venue
     publicationData.href = row.href
-    publicationData.create_date = row.create_date
-    publicationImgFilelist.value = [{
-        name: row.img,
-        url: row.img,
-        response: row.img,
-    }]
 }
 
 // 保存更新
 const updatePublication = async () => {
-    const data = {
-        img: publicationData.img,
-        authors: publicationData.authors,
-        title: publicationData.title,
-        venue: publicationData.venue,
-        href: publicationData.href,
-        create_date: publicationData.create_date,
-    }
-    console.log('update', data)
-    const updateRes = await apiUpdatePublication(publicationData.id, data)
-    if (updateRes) {
-        ElMessage.success('更新成功')
-        await fetchPublications()
-    }
-    dialogVisible.value = false
+    publicationForm.value?.validate(async (valid, fields) => {
+        if (valid) {
+            const data = {
+                img: publicationData.img,
+                authors: publicationData.authors,
+                title: publicationData.title,
+                venue: publicationData.venue,
+                href: publicationData.href,
+            }
+            console.log('update', data)
+            const updateRes = await apiUpdatePublication(publicationData.id, data)
+            if (updateRes) {
+                ElMessage.success('更新成功')
+                await fetchPublications()
+                handleClose()
+            }
+        } else {
+            ElMessage.error('Validation failed...Please check form.')
+            console.log('error submit!!', fields)
+            return false
+        }
+    })
+
 }
 
 // 删除论文
@@ -198,6 +224,7 @@ const handleUploadPreview: UploadProps['onPreview'] = (uploadFile: UploadFile) =
 
 const handleClose = () => {
     dialogVisible.value = false
+    publicationForm.value!.resetFields()
     setTimeout(() => {
         publicationData.id = ''
         publicationData.img = ''
@@ -205,9 +232,7 @@ const handleClose = () => {
         publicationData.title = ''
         publicationData.venue = ''
         publicationData.href = ''
-        publicationData.create_date = ''
-        publicationImgFilelist.value = []
-    }, 50)
+    }, 300)
 }
 
 const handleUploadSuccess = (response: any, file: UploadFile, filelist: UploadFiles) => {
@@ -220,9 +245,9 @@ const handleUploadRemove = (file: UploadFile, filelist: UploadFiles) => {
     publicationData.img = ''
 }
 
-const handleUploadChange = (file: UploadFile, filelist: UploadFiles) => {
-    publicationImgFilelist.value = filelist.slice(-1)
-}
+// const handleUploadChange = (file: UploadFile, filelist: UploadFiles) => {
+//     publicationImgFilelist.value = filelist.slice(-1)
+// }
 
 const dialogVisible = ref(false)
 const mode = ref<'create' | 'edit'>('create')
@@ -231,7 +256,13 @@ const textMap = {
     'edit': 'Edit Publication'
 }
 
-const publicationImgFilelist = ref<any[]>([])
+const publicationImgFilelist = computed(() => {
+    return publicationData.img ? [{
+        name: publicationData.img,
+        url: publicationData.img,
+        response: publicationData.img,
+    }] : []
+})
 
 
 
