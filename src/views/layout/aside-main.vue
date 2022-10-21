@@ -20,7 +20,7 @@ defineProps<{
     activeName: string;
 }>()
 
-const controllers = ['Home', 'Metadata', 'Publication', 'Project', 'Member', 'News', 'Image'];
+const controllers = ['Home', 'Metadata', 'Publication', 'Project', 'Member', 'News'];
 </script>
 <style lang="scss" scoped>
 .aside-main {
