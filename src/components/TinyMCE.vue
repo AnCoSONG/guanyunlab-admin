@@ -1,21 +1,23 @@
 <template>
-    <Editor v-model="text" :api-key="apiKey" :init="config" />
+    <Editor v-model="text" :api-key="apiKey" :init="config" @selectionChange="onSelectionChange"/>
 </template>
 <script setup lang='ts'>
 import Editor from '@tinymce/tinymce-vue'
 import { ElMessage } from 'element-plus';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { apiUpdateMetadata, apiUploadImg } from '../api'
 import { useMetadataStore } from '../stores'
-const props = defineProps<{ text: string, metadata_key: keyof Metadata }>()
+const props = defineProps<{ text: string }>()
+const emit = defineEmits(['save'])
 const metadataStore = useMetadataStore()
 const apiKey = import.meta.env.VITE_TINYMCE_API_KEY
 const isSmallScreen = window.matchMedia('(max-width: 768px)').matches;
+const editorRef = ref()
 const config = {
     plugins: `preview importcss searchreplace autolink autosave 
         save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons`,
     menubar: 'file edit view insert format tools table help',
-    toolbar: 'save | undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview print | insertfile image media template link anchor codesample | ltr rtl ',
+    toolbar: 'save | undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | hr | charmap emoticons | fullscreen  preview print | insertfile image media template link anchor codesample | ltr rtl ',
     autosave_ask_before_unload: true,
     width: '100%',
     autosave_interval: '30s',
@@ -76,13 +78,9 @@ const config = {
             return Promise.reject('上传失败')
         }
     },
-    save_onsavecallback: async () => {
-        // console.log(props.text)
-        const res = await apiUpdateMetadata({
-            id: metadataStore.id,
-            [props.metadata_key]: props.text,
-        })
-        ElMessage.success('保存成功')
+    save_onsavecallback: () => {
+        console.log(props.text)
+        emit('save', props.text)
     },
     contextmenu: 'link image table',
     quickbars_selection_toolbar: 'bold italic quicklink h1 h2 h3 blockquote',
@@ -102,6 +100,17 @@ const config = {
     ],
     paste_data_images: true
 }
+
+const onSelectionChange = (event: any, editor: any) => {
+    editorRef.value = editor
+}
+
+defineExpose({
+    save: () => {
+        console.log(editorRef.value)
+        editorRef.value.execCommand('mceSave')
+    }
+})
 
 
 </script>
