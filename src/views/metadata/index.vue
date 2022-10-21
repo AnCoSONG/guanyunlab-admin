@@ -22,16 +22,16 @@
             </Teleport>
         </Section>
         <Section title="Recruit">
-            <TinyMCE :text="metadata.recruit_hypertext" metadata_key="recruit_hypertext"></TinyMCE>
+            <TinyMCE :text="metadata.recruit_hypertext" @save="(text: string) => onSave('recruit_hypertext', text)"></TinyMCE>
         </Section>
         <Section title="Collaboration and Sponsor">
-            <TinyMCE :text="metadata.collaboration_sponsor_hypertext" metadata_key="collaboration_sponsor_hypertext" />
+            <TinyMCE :text="metadata.collaboration_sponsor_hypertext" @save="(text: string) => onSave('collaboration_sponsor_hypertext', text)" />
         </Section>
         <Section title="Lab and Office">
-            <TinyMCE :text="metadata.lab_office_hypertext" metadata_key="lab_office_hypertext" />
+            <TinyMCE :text="metadata.lab_office_hypertext" @save="(text: string) => onSave('lab_office_hypertext', text)" />
         </Section>
         <Section title="Contact Info">
-            <TinyMCE :text="metadata.info_hypertext" metadata_key="info_hypertext" />
+            <TinyMCE :text="metadata.info_hypertext" @save="(text: string) => onSave('info_hypertext', text)" />
         </Section>
     </div>
 
@@ -105,6 +105,16 @@ const updateMetadata = async (key: keyof Metadata, value: any) => {
     })
     metadata.about_heros = res.about_heros
     ElMessage.success('Update about images successfully!')
+}
+
+const onSave = async (metadata_key: keyof Omit<Omit<Metadata, 'id'>, 'about_heros'>, text: string) => {
+    metadata[metadata_key] = text
+    console.log(metadata)
+    await apiUpdateMetadata({
+        id: metadataStore.id,
+        [metadata_key]: text
+    })
+    ElMessage.success('保存成功')
 }
 
 </script>
