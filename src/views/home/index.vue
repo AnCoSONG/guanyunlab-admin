@@ -1,5 +1,5 @@
 <template>
-    <div>Home</div>
+    <div>Welcome To Admin Page!</div>
 </template>
 <script setup lang='ts'>
 
