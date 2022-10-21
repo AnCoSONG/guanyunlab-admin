@@ -1,5 +1,5 @@
 <template>
-    <section class="section">
+    <section class="section" :style="{ marginTop: no_top_margin?'0px': '20px'}">
         <div class="title">{{title}}</div>
         <div class="controls">
             <slot name="controls"></slot>
@@ -10,7 +10,8 @@
     </section>
 </template>
 <script setup lang='ts'>
-defineProps<{ title: string }>()
+withDefaults(defineProps<{ title: string, no_top_margin: boolean }>(),
+    { no_top_margin: false, title: 'Default' })
 </script>
 <style lang="scss" scoped>
 .section {
@@ -31,8 +32,8 @@ defineProps<{ title: string }>()
     .controls {
         display: flex;
         flex-flow: nowrap;
-        
-        &:deep(> *){
+
+        &:deep(> *) {
             margin-right: 12px;
             margin-bottom: 12px;
         }
