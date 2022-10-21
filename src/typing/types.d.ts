@@ -22,6 +22,8 @@ declare type Publication = {
     create_date: string;
 }
 
+declare type PublicationWithoutAutoKey = Omit<Omit<Publication, 'id'>, 'create_date'>
+
 declare type Project = {
     id: string;
     cn_authors: string;
@@ -39,4 +41,38 @@ declare type Project = {
     create_date: string;
     create_date_real: string;
     update_date: string;
+}
+
+declare type ProjectWithoutAutoKey = Omit<Omit<Omit<Project, 'id'>, 'create_date_real'>, 'update_date'>
+declare enum MemberRole {
+    student = 'student',
+    teacher = 'teacher',
+    intern = 'intern',
+}
+
+declare type Member = {
+    id: string;
+    avatar: string;
+    hero_avatar: string;
+    identity: MemberRole;
+    cn_name: string;
+    en_name: string;
+    cn_title: string;
+    en_title: string;
+    hypertext: string;
+}
+
+declare type MemberWithoutAutoKey = Omit<Member, 'id'>
+
+
+declare type News = {
+    id: string;
+    title: string;
+    last_date: string;
+    hypertext: string;
+}
+
+declare type NewsWithoutAutoKey = {
+    title: string;
+    hypertext: string;
 }

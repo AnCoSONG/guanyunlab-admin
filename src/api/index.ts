@@ -101,7 +101,7 @@ export const apiGetPublications = async () => {
 
 }
 
-export const apiCreatePublication = async (publication: Omit<Publication, 'id'>) => {
+export const apiCreatePublication = async (publication: PublicationWithoutAutoKey) => {
     const res = await request.post<Publication>('/paper', publication).catch(err => {
         console.log(err);
         return null;
@@ -113,7 +113,7 @@ export const apiCreatePublication = async (publication: Omit<Publication, 'id'>)
     return res.data;
 }
 
-export const apiUpdatePublication = async (id: string, publication: Partial<Omit<Publication, 'id'>>) => {
+export const apiUpdatePublication = async (id: string, publication: PublicationWithoutAutoKey) => {
     const res = await request.patch<Publication>('/paper/' + id, publication).catch(err => {
         console.log(err);
         return null;
@@ -149,7 +149,7 @@ export const apiGetProjects = async () => {
     return res.data;
 }
 
-export const apiCreateProject = async (project: Omit<Project, 'id'>) => {
+export const apiCreateProject = async (project: ProjectWithoutAutoKey) => {
     const res = await request.post<Project>('/project', project).catch(err => {
         console.log(err);
         return null;
@@ -161,7 +161,7 @@ export const apiCreateProject = async (project: Omit<Project, 'id'>) => {
     return res.data;
 }
 
-export const apiUpdateProject = async (id: string, project: Partial<Omit<Project, 'id'>>) => {
+export const apiUpdateProject = async (id: string, project: Partial<ProjectWithoutAutoKey>) => {
     const res = await request.patch<Project>('/project/' + id, project).catch(err => {
         console.log(err);
         return null;
@@ -180,6 +180,102 @@ export const apiDeleteProject = async (id: string) => {
     })
     if (!res) {
         ElMessage.error("删除项目失败");
+        throw new Error("删除失败");
+    }
+    return res.data;
+}
+
+export const apiGetMembers = async () => {
+    const res = await request.get<Member[]>('/member').catch(err => {
+        console.log(err);
+        return null;
+    })
+    if (!res) {
+        ElMessage.error("获取成员失败");
+        throw new Error("获取失败");
+    }
+    return res.data;
+}
+
+export const apiCreateMember = async (member: MemberWithoutAutoKey) => {
+    const res = await request.post<Member>('/member', member).catch(err => {
+        console.log(err);
+        return null;
+    })
+    if (!res) {
+        ElMessage.error("创建成员失败");
+        throw new Error("创建失败");
+    }
+    return res.data;
+}
+
+export const apiUpdateMember = async (id: string, member: Partial<MemberWithoutAutoKey>) => {
+    const res = await request.patch<Member>('/member/' + id, member).catch(err => {
+        console.log(err);
+        return null;
+    })
+    if (!res) {
+        ElMessage.error("更新成员失败");
+        throw new Error("更新失败");
+    }
+    return res.data;
+}
+
+export const apiDeleteMember = async (id: string) => {
+    const res = await request.delete('/member/' + id).catch(err => {
+        console.log(err);
+        return null;
+    })
+    if (!res) {
+        ElMessage.error("删除成员失败");
+        throw new Error("删除失败");
+    }
+    return res.data;
+}
+
+export const apiGetNewss = async () => {
+    const res = await request.get<News[]>('/news').catch(err => {
+        console.log(err);
+        return null;
+    })
+    if (!res) {
+        ElMessage.error("获取新闻失败");
+        throw new Error("获取失败");
+    }
+    return res.data;
+}
+
+export const apiCreateNews = async (news: NewsWithoutAutoKey) => {
+    const res = await request.post<News>('/news', news).catch(err => {
+        console.log(err);
+        return null;
+    })
+    if (!res) {
+        ElMessage.error("创建新闻失败");
+        throw new Error("创建失败");
+    }
+    return res.data;
+}
+
+export const apiUpdateNews = async (id: string, news: Partial<NewsWithoutAutoKey>) => {
+    const res = await request.patch<News>('/news/' + id, news).catch(err => {
+        console.log(err);
+        return null;
+    })
+    if (!res) {
+        ElMessage.error("更新新闻失败");
+        throw new Error("更新失败");
+    }
+    return res.data;
+}
+
+export const apiDeleteNews = async (id: string) => {
+    const res = await request.delete('/news/' + id).catch(err => {
+        console.log(err);
+        return null;
+    })
+    if (!res) {
+        ElMessage.error("删除新闻失败");
         throw new Error("删除失败");
     }
     return res.data;
