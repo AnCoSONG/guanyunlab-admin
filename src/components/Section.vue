@@ -10,7 +10,7 @@
     </section>
 </template>
 <script setup lang='ts'>
-withDefaults(defineProps<{ title: string, no_top_margin: boolean }>(),
+withDefaults(defineProps<{ title: string, no_top_margin?: boolean }>(),
     { no_top_margin: false, title: 'Default' })
 </script>
 <style lang="scss" scoped>
