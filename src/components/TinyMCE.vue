@@ -95,7 +95,7 @@ const config = {
     style_formats_merge: true,
     image_class_list: [
         { title: 'None', value: '' },
-        { title: 'Fixed size', value: 'fixed' },
+        { title: 'Full width', value: 'full' },
     ],
     link_list: [
         { title: 'Zhejiang University Official Site', value: 'https://www.zju.edu.cn/' },
