@@ -34,7 +34,7 @@
             </el-table-column>
         </el-table>
         <Teleport to="body">
-            <el-dialog v-model="dialogVisible" :title="textMap[mode]" @close="handleClose">
+            <el-dialog v-model="dialogVisible" :title="textMap[mode]" @close="handleClose" :close-on-click-modal="false">
                 <el-form ref="publicationForm" :model="publicationData" label-width="120px" label-position="left"
                     :rules="rules">
                     <el-form-item label="Title" prop="title">

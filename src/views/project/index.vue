@@ -42,8 +42,21 @@
             </el-table-column>
             <el-table-column prop="create_date" label="Project Date" width="180" />
             <el-table-column prop="short_abstract" label="Short Abstract" width="180" />
-            <el-table-column prop="cn_abstract" label="cn_abstract" width="180" />
-            <el-table-column prop="en_abstract" label="en_abstract" width="180" />
+
+            <el-table-column label="cn_abstract" width="180">
+                <template #default="data">
+                    <div>
+                        {{data.row.cn_abstract.length > 35 ? data.row.cn_abstract.slice(0, 35) + '...' : data.row.cn_abstract}}
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column label="en_abstract" width="180">
+                <template #default="data">
+                    <div>
+                        {{data.row.en_abstract.length > 100 ? data.row.en_abstract.slice(0, 100) + '...' : data.row.en_abstract}}
+                    </div>
+                </template>
+            </el-table-column>
             <el-table-column prop="view_count" label="view_count" width="180" />
             <el-table-column label="hypertext" width="180">
                 <template #default="data">
@@ -73,8 +86,8 @@
                     <el-form-item label="Title (English)" prop="en_name">
                         <el-input v-model="projectData.en_name" />
                     </el-form-item>
-                    <el-form-item label="The first author" prop="first_author">
-                        <el-input v-model="projectData.first_author" />
+                    <el-form-item label="The first author" prop="first_author" >
+                        <el-input v-model="projectData.first_author" maxlength="100" show-word-limit/>
                     </el-form-item>
                     <el-form-item label="Authors (Chinese)" prop="cn_authors">
                         <el-input v-model="projectData.cn_authors" />
@@ -83,13 +96,13 @@
                         <el-input v-model="projectData.en_authors" />
                     </el-form-item>
                     <el-form-item label="Short Abstract (English)" prop="short_abstract">
-                        <el-input v-model="projectData.short_abstract" type="textarea" autosize />
+                        <el-input v-model="projectData.short_abstract" type="textarea" :autosize="{ minRows: 2, maxRows: 8 }" maxlength="255" show-word-limit/>
                     </el-form-item>
                     <el-form-item label="Abstract (Chinese)" prop="cn_abstract">
-                        <el-input v-model="projectData.cn_abstract" type="textarea" autosize />
+                        <el-input v-model="projectData.cn_abstract" type="textarea" :autosize="{ minRows: 2, maxRows: 8 }" />
                     </el-form-item>
                     <el-form-item label="Abstract (English)" prop="en_abstract">
-                        <el-input v-model="projectData.en_abstract" type="textarea" autosize />
+                        <el-input v-model="projectData.en_abstract" type="textarea" :autosize="{ minRows: 2, maxRows: 8 }" />
                     </el-form-item>
                     <el-form-item label="Project Date" prop="create_date">
                         <el-date-picker v-model="projectData.create_date" type="date" placeholder="Select date" />
