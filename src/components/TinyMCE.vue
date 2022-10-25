@@ -1,5 +1,5 @@
 <template>
-    <Editor v-model="text" :api-key="apiKey" :init="config" @selectionChange="onSelectionChange"/>
+    <Editor v-model="textRef" :api-key="apiKey" :init="config" @selectionChange="onSelectionChange"/>
 </template>
 <script setup lang='ts'>
 import Editor from '@tinymce/tinymce-vue'
@@ -8,6 +8,7 @@ import { onMounted, ref } from 'vue';
 import { apiUpdateMetadata, apiUploadImg } from '../api'
 import { useMetadataStore } from '../stores'
 const props = defineProps<{ text: string }>()
+const textRef = ref(props.text)
 const emit = defineEmits(['save'])
 const metadataStore = useMetadataStore()
 const apiKey = import.meta.env.VITE_TINYMCE_API_KEY
@@ -79,8 +80,7 @@ const config = {
         }
     },
     save_onsavecallback: () => {
-        console.log(props.text)
-        emit('save', props.text)
+        emit('save', textRef.value)
     },
     contextmenu: 'link image table',
     quickbars_selection_toolbar: 'bold italic quicklink h1 h2 h3 blockquote',

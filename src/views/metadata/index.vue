@@ -109,7 +109,7 @@ const updateMetadata = async (key: keyof Metadata, value: any) => {
 
 const onSave = async (metadata_key: keyof Omit<Omit<Metadata, 'id'>, 'about_heros'>, text: string) => {
     metadata[metadata_key] = text
-    console.log(metadata)
+    console.log(metadata[metadata_key])
     await apiUpdateMetadata({
         id: metadataStore.id,
         [metadata_key]: text
