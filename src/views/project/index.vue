@@ -234,20 +234,21 @@ const handleCreateProject = () => {
 const handleEdit = (project: Project) => {
     dialogVisible.value = true
     mode.value = 'edit'
-    projectData.id = project.id
-    projectData.cn_authors = project.cn_authors
-    projectData.en_authors = project.en_authors
-    projectData.first_author = project.first_author
-    projectData.cn_name = project.cn_name
-    projectData.en_name = project.en_name
-    projectData.short_abstract = project.short_abstract
-    projectData.en_abstract = project.en_abstract
-    projectData.cn_abstract = project.cn_abstract
-    projectData.view_count = project.view_count
-    projectData.hero_img = project.hero_img
-    projectData.hypertext = project.hypertext
-    projectData.imgs = project.imgs
-    projectData.create_date = project.create_date
+    Object.assign(projectData, project)
+    // projectData.id = project.id
+    // projectData.cn_authors = project.cn_authors
+    // projectData.en_authors = project.en_authors
+    // projectData.first_author = project.first_author
+    // projectData.cn_name = project.cn_name
+    // projectData.en_name = project.en_name
+    // projectData.short_abstract = project.short_abstract
+    // projectData.en_abstract = project.en_abstract
+    // projectData.cn_abstract = project.cn_abstract
+    // projectData.view_count = project.view_count
+    // projectData.hero_img = project.hero_img
+    // projectData.hypertext = project.hypertext
+    // projectData.imgs = project.imgs
+    // projectData.create_date = project.create_date
     console.log(projectData)
 }
 

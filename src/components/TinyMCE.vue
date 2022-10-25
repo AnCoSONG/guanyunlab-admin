@@ -4,11 +4,14 @@
 <script setup lang='ts'>
 import Editor from '@tinymce/tinymce-vue'
 import { ElMessage } from 'element-plus';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { apiUpdateMetadata, apiUploadImg } from '../api'
 import { useMetadataStore } from '../stores'
 const props = defineProps<{ text: string }>()
 const textRef = ref(props.text)
+watch(() => props.text, (newVal) => {
+    textRef.value = newVal
+})
 const emit = defineEmits(['save'])
 const metadataStore = useMetadataStore()
 const apiKey = import.meta.env.VITE_TINYMCE_API_KEY
