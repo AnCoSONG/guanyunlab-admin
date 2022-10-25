@@ -19,6 +19,7 @@ declare type Publication = {
     title: string;
     venue: string;
     href: string;
+    published_at: string;
     create_date: string;
 }
 
