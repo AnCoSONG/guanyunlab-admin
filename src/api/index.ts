@@ -50,7 +50,7 @@ export const apiUploadImg = async (file: File, onProgressCb: any) => {
                     (progressEvent.loaded / (progressEvent.total ?? 1)) * 100
                 );
                 onProgressCb(
-                    (progressEvent.loaded / (progressEvent.total ?? 1)) * 100
+                    Math.round((progressEvent.loaded / (progressEvent.total ?? 1)) * 100)
                 );
             },
         })
