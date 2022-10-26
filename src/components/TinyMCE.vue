@@ -1,5 +1,5 @@
 <template>
-    <Editor v-model="textRef" :api-key="apiKey" :init="config" @selectionChange="onSelectionChange"/>
+    <Editor v-model="textRef" :api-key="apiKey" :init="config" @selectionChange="onSelectionChange" />
 </template>
 <script setup lang='ts'>
 import Editor from '@tinymce/tinymce-vue'
@@ -18,6 +18,8 @@ const apiKey = import.meta.env.VITE_TINYMCE_API_KEY
 const isSmallScreen = window.matchMedia('(max-width: 768px)').matches;
 const editorRef = ref()
 const config = {
+    relative_urls: false,
+    remove_script_host: false,
     plugins: `preview importcss searchreplace autolink autosave 
         save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons`,
     menubar: 'file edit view insert format tools table help',
