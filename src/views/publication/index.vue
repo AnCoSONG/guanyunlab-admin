@@ -21,9 +21,9 @@
                     {{ toLocalTime(data.row.published_at) }}
                 </template>
             </el-table-column>
-            <el-table-column label="Create Date" width="180">
+            <el-table-column label="Create At" width="180">
                 <template #default="data">
-                    {{ toLocalTime(data.row.create_date) }}
+                    {{ new Date(data.row.create_date).toLocaleString() }}
                 </template>
             </el-table-column>
             <el-table-column label="Operation" width="120" fixed="right">

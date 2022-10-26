@@ -5,13 +5,17 @@
         </template>
         <el-table :data="newss" style="width: 100%;" highlight-current-row max-height="1500">
             <el-table-column prop="id" label="Id" width="180" />
-            <el-table-column prop="title" label="Title" width="180"/>
-            <el-table-column label="Content">
+            <el-table-column prop="title" label="Title" width="300"/>
+            <el-table-column label="Content" width="180">
                 <template #default="{ row }">
                     <el-button type="primary" @click="handleViewHyperText(row)">View</el-button>
                 </template>
             </el-table-column>
-            <el-table-column prop="last_date" label="Update Date" width="180" />
+            <el-table-column prop="last_date" label="Update Date" width="180">
+                <template #default="{ row }">
+                    {{ new Date(row.last_date).toLocaleDateString() }}
+                </template>
+            </el-table-column>
             <el-table-column label="Operation" width="120" fixed="right">
                 <template #default="data">
                     <el-button type="text" @click="handleEdit(data.row)">Edit</el-button>

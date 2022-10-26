@@ -40,7 +40,11 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column prop="create_date" label="Project Date" width="180" />
+            <el-table-column prop="create_date" label="Project Date" width="180" >
+                <template #default="data">
+                    {{ new Date(data.row.create_date).toLocaleDateString() }}
+                </template>
+            </el-table-column>
             <el-table-column prop="short_abstract" label="Short Abstract" width="180" />
 
             <el-table-column label="cn_abstract" width="180">
@@ -63,8 +67,20 @@
                     <el-button type="primary" @click="handleHyperTextViewOpen(data.row.hypertext)">View</el-button>
                 </template>
             </el-table-column>
-            <el-table-column prop="create_date_real" label="create date" width="180"></el-table-column>
-            <el-table-column prop="update_date" label="update date" width="180"></el-table-column>
+            <el-table-column prop="create_date_real" label="Created at" width="180">
+                <template #default="data">
+                    <div>
+                        {{new Date(data.row.create_date_real).toLocaleString()}}
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="update_date" label="Last Updated At" width="180">
+                <template #default="data">
+                    <div>
+                        {{new Date(data.row.update_date).toLocaleString()}}
+                    </div>
+                </template>
+            </el-table-column>
             <el-table-column label="Operation" width="120" fixed="right">
                 <template #default="data">
                     <el-button type="text" @click="handleEdit(data.row)">Edit</el-button>
