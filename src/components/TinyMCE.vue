@@ -55,7 +55,7 @@ const config = {
                 ElMessage.error('文件大小不能超过10MB')
                 return;
             }
-            const res = await apiUploadImg(file, (progress: number) => { })
+            const res = await apiUploadImg(file, null, (progress: number) => { })
             if (res) {
                 callback(res, { title: file.name })
             } else {
@@ -76,7 +76,7 @@ const config = {
     },
     images_upload_handler: async (blobInfo: any, progress: any) => {
         console.log('images_upload_handler')
-        const res = await apiUploadImg(blobInfo.blob(), progress)
+        const res = await apiUploadImg(blobInfo.blob(), null, progress)
         if (res) {
             return res
         } else {

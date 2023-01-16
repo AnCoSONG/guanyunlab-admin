@@ -34,7 +34,7 @@ export const apiCheck = async () => {
     }
 };
 
-export const apiUploadImg = async (file: File, onProgressCb: (evt: Partial<UploadProgressEvent>) => void) => {
+export const apiUploadImg = async (file: File, onProgressCb: ((evt: Partial<UploadProgressEvent>) => void) | null, onProgressMCE: ((progress: number) => void) | null) => {
     const formData = new FormData();
     formData.append("file", file);
     const res = await axios
@@ -49,11 +49,18 @@ export const apiUploadImg = async (file: File, onProgressCb: (evt: Partial<Uploa
                 console.log(
                     (progressEvent.loaded / (progressEvent.total ?? 1)) * 100
                 );
-                onProgressCb({
-                    percent: (progressEvent.loaded / (progressEvent.total ?? 1)) * 100,
-                    loaded: progressEvent.loaded,
-                    total: progressEvent.total ?? 1,
-                });
+                if (onProgressCb) {
+                    onProgressCb({
+                        percent: (progressEvent.loaded / (progressEvent.total ?? 1)) * 100,
+                        loaded: progressEvent.loaded,
+                        total: progressEvent.total ?? 1,
+                    });
+                }
+
+                if (onProgressMCE) {
+                    onProgressMCE((progressEvent.loaded / (progressEvent.total ?? 1)) * 100);
+                }
+                    
             },
         })
         .catch((err) => {
