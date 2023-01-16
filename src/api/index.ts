@@ -34,7 +34,7 @@ export const apiCheck = async () => {
     }
 };
 
-export const apiUploadImg = async (file: File, onProgressCb: any) => {
+export const apiUploadImg = async (file: File, onProgressCb: (evt: Partial<UploadProgressEvent>) => void) => {
     const formData = new FormData();
     formData.append("file", file);
     const res = await axios
@@ -49,9 +49,11 @@ export const apiUploadImg = async (file: File, onProgressCb: any) => {
                 console.log(
                     (progressEvent.loaded / (progressEvent.total ?? 1)) * 100
                 );
-                onProgressCb(
-                    Math.round((progressEvent.loaded / (progressEvent.total ?? 1)) * 100)
-                );
+                onProgressCb({
+                    percent: (progressEvent.loaded / (progressEvent.total ?? 1)) * 100,
+                    loaded: progressEvent.loaded,
+                    total: progressEvent.total ?? 1,
+                });
             },
         })
         .catch((err) => {
