@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.10",
-    "@tinymce/tinymce-vue": "^5.0.0",
+    "@tinymce/tinymce-vue": "^5.0.1-rc.20221019005726591.sha6dc048a",
     "axios": "^1.1.2",
     "crypto-js": "^4.1.1",
     "element-plus": "^2.2.17",

@@ -78,10 +78,10 @@
     estree-walker "^2.0.1"
     picomatch "^2.2.2"
 
-"@tinymce/tinymce-vue@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.npmmirror.com/@tinymce/tinymce-vue/-/tinymce-vue-5.0.0.tgz#0cba42697f36fa425f231e181857149a0538bde9"
-  integrity sha512-1HRCNa2eGdztOKShYAiHIry50LTU6YJG//qSP9AJElrXhb3BIBN0Bef6E56nZObVgwCgSmI4cnX35VU9D49aow==
+"@tinymce/tinymce-vue@^5.0.1-rc.20221019005726591.sha6dc048a":
+  version "5.0.1-rc.20221019005726591.sha6dc048a"
+  resolved "https://registry.npmjs.org/@tinymce/tinymce-vue/-/tinymce-vue-5.0.1-rc.20221019005726591.sha6dc048a.tgz#b738cc3c5525d94f034f2e2bb3ca970d03852aeb"
+  integrity sha512-K27YYGZRop7U1FrAip1OG4sW+Ho7zhjHbijAEKCWPR5M2gzzgxwsWRPN3rShHxH2UqpE45/5fiO/pEAujgWB/g==
   dependencies:
     tinymce "^6.0.0 || ^5.5.1"
 
@@ -925,9 +925,9 @@ supports-preserve-symlinks-flag@^1.0.0:
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
 "tinymce@^6.0.0 || ^5.5.1":
-  version "6.2.0"
-  resolved "https://registry.npmmirror.com/tinymce/-/tinymce-6.2.0.tgz#473aa38af03bf772916f3e1730e6b8d3471203f0"
-  integrity sha512-zLjbFrg0hbtJ6PxmZUjQY6zyIOM/mLrWGTvhBec7XwYwoW1E0xXMQzy2tgMTh3OvJpsclgqf2ZMjmwcv4Cludw==
+  version "6.3.1"
+  resolved "https://registry.npmjs.org/tinymce/-/tinymce-6.3.1.tgz#cc5cf2b9f702d429cf5d1d21ed62245d768bfc4f"
+  integrity sha512-+oCwXuTxAdJXVJ0130OxQz0JDNsqg3deuzgeUo8X5Vb27EzCJgXwO5eWvCxvkxpQo4oiHMVlM4tUIpTUHufHGQ==
 
 to-regex-range@^5.0.1:
   version "5.0.1"
