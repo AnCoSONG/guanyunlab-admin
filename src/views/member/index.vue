@@ -44,7 +44,7 @@
         </el-table>
         <el-dialog v-model="hypertextViewDialogVisible" fullscreen append-to-body title="Preview"
             @close="handleHypertextViewDialogClose">
-            <div v-html="hypertextToView"></div>
+            <div v-html="hypertextToView" class="htmlViewer"></div>
         </el-dialog>
         <el-dialog v-model="formDialogVisible" :title="textMap[mode]" @close="handleCloseForm" append-to-body>
             <el-form :model="memberData" :rules="rules" ref="memberForm" label-width="120px" label-position="left">

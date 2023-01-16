@@ -24,7 +24,7 @@
             </el-table-column>
         </el-table>
         <el-dialog v-model="hypertextDialogVisible" append-to-body fullscreen title="Preview">
-            <div v-html="hypertextToView"></div>
+            <div v-html="hypertextToView" class="htmlViewer"></div>
         </el-dialog>
         <el-dialog v-model="newsDialogVisible" :title="textMap[mode]" @close="handleClose">
             <el-form ref="newsForm" :model="newsData" label-width="180px" label-position="left" :rules="rules">

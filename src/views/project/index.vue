@@ -90,7 +90,7 @@
         </el-table>
         <el-dialog v-model="hypertextViewDialogVisible" fullscreen append-to-body @close="handleHyperTextViewClose()"
             title="Preview">
-            <div v-html="hyptertextToView"></div>
+            <div v-html="hyptertextToView" class="htmlViewer"></div>
         </el-dialog>
         <Teleport to="body">
             <el-dialog v-model="dialogVisible" :title="textMap[mode]" @close="handleClose">

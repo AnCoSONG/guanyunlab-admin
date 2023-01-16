@@ -21,17 +21,8 @@
                 </el-dialog>
             </Teleport>
         </Section>
-        <Section title="Recruit">
-            <TinyMCE :text="metadata.recruit_hypertext" @save="(text: string) => onSave('recruit_hypertext', text)"></TinyMCE>
-        </Section>
-        <Section title="Collaboration and Sponsor">
-            <TinyMCE :text="metadata.collaboration_sponsor_hypertext" @save="(text: string) => onSave('collaboration_sponsor_hypertext', text)" />
-        </Section>
-        <Section title="Lab and Office">
-            <TinyMCE :text="metadata.lab_office_hypertext" @save="(text: string) => onSave('lab_office_hypertext', text)" />
-        </Section>
-        <Section title="Contact Info">
-            <TinyMCE :text="metadata.info_hypertext" @save="(text: string) => onSave('info_hypertext', text)" />
+        <Section title="Contact">
+            <TinyMCE :text="metadata.contact_hypertext" @save="(text: string) => onSave('contact_hypertext', text)"></TinyMCE>
         </Section>
     </div>
 
@@ -51,19 +42,13 @@ import { uploadImage } from '../../utils'
 const metadataStore = useMetadataStore()
 const metadata = reactive({
     about_heros: [] as string[],
-    recruit_hypertext: '' as string,
-    collaboration_sponsor_hypertext: '' as string,
-    lab_office_hypertext: '' as string,
-    info_hypertext: '' as string,
+    contact_hypertext: ''
 })
 
 // 同步信息
 const res = await apiGetMetadata()
 metadata.about_heros = res.about_heros
-metadata.recruit_hypertext = res.recruit_hypertext
-metadata.collaboration_sponsor_hypertext = res.collaboration_sponsor_hypertext
-metadata.lab_office_hypertext = res.lab_office_hypertext
-metadata.info_hypertext = res.info_hypertext
+metadata.contact_hypertext = res.contact_hypertext
 metadataStore.id = res.id
 onUnmounted(() => {
 
