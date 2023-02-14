@@ -37,6 +37,7 @@ declare type Project = {
     hypertext: string;
     imgs: string[];
     create_date: string;
+    hero_priority: number;
     create_date_real: string;
     update_date: string;
 }
@@ -46,6 +47,7 @@ declare enum MemberRole {
     student = 'student',
     teacher = 'teacher',
     intern = 'intern',
+    graduate = 'graduate'
 }
 
 declare type Member = {
@@ -58,9 +60,12 @@ declare type Member = {
     cn_title: string;
     en_title: string;
     hypertext: string;
+    priority: number;
+    create_date: string;
+    update_date: string;
 }
 
-declare type MemberWithoutAutoKey = Omit<Member, 'id'>
+declare type MemberWithoutAutoKey = Omit<Omit<Omit<Member, 'id'>, 'create_date'>, 'update_date'>
 
 
 declare type News = {

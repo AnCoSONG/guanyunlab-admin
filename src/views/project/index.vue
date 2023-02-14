@@ -62,6 +62,7 @@
                 </template>
             </el-table-column>
             <el-table-column prop="view_count" label="view_count" width="180" />
+            <el-table-column prop="hero_priority" label="hero_priority" width="180" />
             <el-table-column label="hypertext" width="180">
                 <template #default="data">
                     <el-button type="primary" @click="handleHyperTextViewOpen(data.row.hypertext)">View</el-button>
@@ -126,6 +127,9 @@
                     <el-form-item label="View Count" prop="view_count">
                         <el-input-number v-model="projectData.view_count" :min="0" />
                     </el-form-item>
+                    <el-form-item label="Hero Priority" prop="hero_priority">
+                        <el-input-number v-model="projectData.hero_priority" :min="-1" />
+                    </el-form-item>
                     <el-form-item label="Hero Image" prop="hero_img">
                         <el-upload :file-list="heroImageFilelist" list-type="picture-card" :auto-upload="true"
                             action="#" :http-request="uploadImage" :on-success="handleUploadHeroSuccess"
@@ -189,6 +193,7 @@ const projectData = reactive<ProjectWithoutAutoKey & { id: string }>({
     hypertext: '',
     imgs: [],
     create_date: '',
+    hero_priority: -1
 })
 
 const rules = reactive({
@@ -230,6 +235,9 @@ const rules = reactive({
     ],
     hypertext: [
         { required: true, message: 'Please input the hypertext', trigger: 'blur' },
+    ],
+    hero_priority: [
+        { required: true, message: 'Please input the hero priority', trigger: 'blur' },
     ],
 })
 
@@ -329,6 +337,7 @@ const handleClose = () => {
         projectData.hypertext = ''
         projectData.imgs = []
         projectData.create_date = ''
+        projectData.hero_priority = - 1
     }, 300)
 }
 
@@ -409,6 +418,7 @@ const createProject = async () => {
                 hypertext: projectData.hypertext,
                 imgs: projectData.imgs,
                 create_date: projectData.create_date,
+                hero_priority: projectData.hero_priority
             }
             const res = await apiCreateProject(data)
             if (res) {
@@ -441,6 +451,7 @@ const updateProject = async () => {
         hypertext: projectData.hypertext,
         imgs: projectData.imgs,
         create_date: projectData.create_date,
+        hero_priority: projectData.hero_priority
     }
     const res = await apiUpdateProject(projectData.id, data)
     if (res) {

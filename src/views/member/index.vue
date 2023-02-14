@@ -27,6 +27,7 @@
                     <span>{{row.cn_title }} / {{row.en_title}}</span>
                 </template>
             </el-table-column>
+            <el-table-column prop="priority" label="priority" width="180" />
             <el-table-column prop="identity" label="identity" width="180" />
 
             <el-table-column label="Hyper Text" prop="hypertext" width="180">
@@ -59,6 +60,9 @@
                 </el-form-item>
                 <el-form-item label="en title" prop="en_title">
                     <el-input v-model="memberData.en_title" />
+                </el-form-item>
+                <el-form-item label="priority" prop="priority">
+                    <el-input-number v-model="memberData.priority" :min="0"/>
                 </el-form-item>
                 <el-form-item label="identity" prop="identity">
                     <el-select v-model="memberData.identity" placeholder="Select identity" size="large">
@@ -125,6 +129,7 @@ enum MemberRole {
     teacher = 'teacher',
     student = 'student',
     intern = 'intern',
+    graduate = 'graduate'
 }
 const members = reactive<Member[]>([])
 const memberData = reactive<MemberWithoutAutoKey & { id: string }>({
@@ -136,7 +141,8 @@ const memberData = reactive<MemberWithoutAutoKey & { id: string }>({
     en_name: '',
     cn_title: '',
     en_title: '',
-    hypertext: ''
+    hypertext: '',
+    priority: 0,
 })
 
 const rules = reactive({
@@ -164,7 +170,9 @@ const rules = reactive({
     hypertext: [
         { required: true, message: 'Please input hypertext', trigger: 'blur' },
     ],
-
+    priority: [
+        { required: true, message: 'Please input priority', trigger: 'blur' },
+    ],
 })
 
 const memberForm = ref<FormInstance>()
@@ -223,6 +231,7 @@ const handleCloseForm = () => {
         memberData.cn_title = ''
         memberData.en_title = ''
         memberData.hypertext = ''
+        memberData.priority = 0
     }, 300)
 }
 
@@ -258,7 +267,8 @@ const createMember = () => {
                 identity: memberData.identity,
                 avatar: memberData.avatar,
                 hero_avatar: memberData.hero_avatar,
-                hypertext: memberData.hypertext
+                hypertext: memberData.hypertext,
+                priority: memberData.priority
             }
             const res = await apiCreateMember(data)
             if (res) {
@@ -287,7 +297,8 @@ const updateMember = () => {
                 identity: memberData.identity,
                 avatar: memberData.avatar,
                 hero_avatar: memberData.hero_avatar,
-                hypertext: memberData.hypertext
+                hypertext: memberData.hypertext,
+                priority: memberData.priority
             }
             const res = await apiUpdateMember(memberData.id, data)
             if (res) {
