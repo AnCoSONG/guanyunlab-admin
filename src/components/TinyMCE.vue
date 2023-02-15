@@ -3,7 +3,7 @@
 </template>
 <script setup lang='ts'>
 import Editor from '@tinymce/tinymce-vue'
-import { ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 import { onMounted, ref, watch } from 'vue';
 import { apiUpdateMetadata, apiUploadImg } from '../api'
 import { useMetadataStore } from '../stores'
@@ -46,16 +46,41 @@ const config = {
             if (!confirm('视频请尽量通过Embed方式上传，仍要上传?')) {
                 return;
             }
-            input.setAttribute('accept', 'audio/*,video/*, application/octet-stream')
+            input.setAttribute('accept', 'audio/*,video/*, application/octet-stream, .mkv')
         }
         input.addEventListener('change', async (e: any) => {
             console.log('file_picker_callback')
             const file = e.target!.files[0]
-            if (file.size > 1024 * 1024 * 10) {
-                ElMessage.error('文件大小不能超过10MB')
+            if (file.size > 1024 * 1024 * 200) {
+                ElMessage.error('文件大小不能超过200MB')
                 return;
             }
-            const res = await apiUploadImg(file, null, (progress: number) => { })
+            const loader = ElMessage(
+                {
+                    message: '上传中...',
+                    type: 'info',
+                    duration: 0,
+                    showClose: false,
+                    customClass: 'el-loading-custom'
+                }
+            )
+            // const loader = ElLoading.service({
+            //     lock: true,
+            //     text: '上传中...',
+            //     spinner: 'el-icon-loading',
+            //     background: 'rgba(0, 0, 0, 0.7)',
+            //     fullscreen: true,
+            //     body: true,
+            //     target: '.tox-dialog',
+            //     customClass: 'el-loading-custom'
+            // })
+            const res = await apiUploadImg(file, null, (progress: number) => {
+                // 更新进度
+                // loader.setText(`上传中...${progress}%`)
+                if (progress == 100) {
+                    loader.close()
+                }
+             })
             if (res) {
                 callback(res, { title: file.name })
             } else {
@@ -119,6 +144,8 @@ defineExpose({
 
 
 </script>
-<style lang="scss" scoped>
-
+<style lang="scss">
+.el-loading-custom {
+    z-index: 9999!important;
+}
 </style>
