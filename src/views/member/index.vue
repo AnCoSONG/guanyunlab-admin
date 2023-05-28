@@ -129,7 +129,8 @@ enum MemberRole {
     teacher = 'teacher',
     student = 'student',
     intern = 'intern',
-    graduate = 'graduate'
+    graduate = 'graduate',
+    postdoc = 'postdoc',
 }
 const members = reactive<Member[]>([])
 const memberData = reactive<MemberWithoutAutoKey & { id: string }>({
