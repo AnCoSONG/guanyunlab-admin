@@ -58,6 +58,13 @@ const generateCaptcha = () => {
     ctx.font = '15px Inter'
     ctx.fillStyle = '#000'
     ctx.fillText(captcha, 10, 20)
+    // 补充一些随机的杂点、杂线，使图像中的验证码不易被其他程序探测到
+    for (let i = 0; i < 20; i++) {
+        ctx.fillStyle = '#000'
+        ctx.beginPath()
+        ctx.arc(Math.random() * 100, Math.random() * 30, 1, 0, 2 * Math.PI)
+        ctx.fill()
+    }
 }
 
 const res = await apiCheck()
