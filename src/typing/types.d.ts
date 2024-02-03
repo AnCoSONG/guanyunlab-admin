@@ -48,7 +48,8 @@ declare enum MemberRole {
     teacher = 'teacher',
     intern = 'intern',
     graduate = 'graduate',
-    postdoc = 'postdoc'
+    postdoc = 'postdoc',
+    ra = 'ra',
 }
 
 declare type Member = {

@@ -131,6 +131,7 @@ enum MemberRole {
     intern = 'intern',
     graduate = 'graduate',
     postdoc = 'postdoc',
+    ra = 'ra',
 }
 const members = reactive<Member[]>([])
 const memberData = reactive<MemberWithoutAutoKey & { id: string }>({
