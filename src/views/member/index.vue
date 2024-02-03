@@ -13,13 +13,13 @@
             <el-table-column prop="avatar" label="avatar" width="300">
                 <template #default="data">
                     <el-image :src="data.row.avatar" style="width: 100%" fit="contain"
-                        :preview-src-list="[data.row.avatar]" preview-teleported />
+                        :preview-src-list="[data.row.avatar]" preview-teleported loading="lazy"/>
                 </template>
             </el-table-column>
             <el-table-column prop="hero_avatar" label="hero avatar" width="300">
                 <template #default="data">
                     <el-image :src="data.row.hero_avatar" style="width: 100%" fit="contain"
-                        :preview-src-list="[data.row.hero_avatar]" preview-teleported />
+                        :preview-src-list="[data.row.hero_avatar]" preview-teleported loading="lazy"/>
                 </template>
             </el-table-column>
             <el-table-column label="position" width="180">

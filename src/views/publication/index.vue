@@ -9,7 +9,7 @@
             <el-table-column label="Image" width="180">
                 <template #default="data">
                     <el-image :src="data.row.img" style="width: 100%" fit="contain" :preview-src-list="[data.row.img]"
-                        preview-teleported />
+                        preview-teleported loading="lazy"/>
                 </template>
             </el-table-column>
             <el-table-column prop="authors" label="Authors" width="180" />

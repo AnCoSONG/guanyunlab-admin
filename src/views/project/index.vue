@@ -13,7 +13,7 @@
             <el-table-column prop="hero_img" label="hero_img" width="300">
                 <template #default="data">
                     <el-image :src="data.row.hero_img" style="width: 100%" fit="contain"
-                        :preview-src-list="[data.row.hero_img]" preview-teleported />
+                        :preview-src-list="[data.row.hero_img]" preview-teleported loading="lazy" />
                 </template>
             </el-table-column>
             <el-table-column label="imgs" width="300">
@@ -22,7 +22,7 @@
                         <el-carousel-item v-for="item in data.row.imgs" :key="item"
                             style="display: flex;flex-flow: nowrap column;justify-content: center; align-items: center;">
                             <el-image :src="item" style="width: 100%" fit="contain" :preview-src-list="data.row.imgs"
-                                preview-teleported />
+                                preview-teleported loading="lazy" />
                         </el-carousel-item>
                     </el-carousel>
                 </template>
