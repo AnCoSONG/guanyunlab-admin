@@ -95,7 +95,7 @@
                     </el-upload>
                 </el-form-item>
                 <el-form-item label="hypertext" prop="hypertext">
-                    <TinyMCE ref="editor" :text="memberData.hypertext" @save="onSave"></TinyMCE>
+                    <TinyMCE ref="editor" :text="memberData.hypertext??''" @save="onSave"></TinyMCE>
                 </el-form-item>
             </el-form>
             <template #footer>
@@ -170,7 +170,7 @@ const rules = reactive({
         { required: true, message: 'Please upload hero avatar', trigger: 'change' },
     ],
     hypertext: [
-        { required: true, message: 'Please input hypertext', trigger: 'blur' },
+        { required: false, message: 'Please input hypertext', trigger: 'blur' },
     ],
     priority: [
         { required: true, message: 'Please input priority', trigger: 'blur' },
