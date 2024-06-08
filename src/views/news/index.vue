@@ -83,7 +83,8 @@ const rules = reactive({
     ],
     update_date: [
         { required: true, message: 'Please input update date', trigger: 'blur' },
-    ]
+        { pattern: /^\d{4}\/\d{2}\/\d{2}$/, message: 'Please input date in format yyyy/mm/dd', trigger: 'blur' },
+    ],
 })
 
 const newsForm = ref<FormInstance>()
