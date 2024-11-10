@@ -51,8 +51,8 @@ const config = {
         input.addEventListener('change', async (e: any) => {
             console.log('file_picker_callback')
             const file = e.target!.files[0]
-            if (file.size > 1024 * 1024 * 60) {
-                ElMessage.error('文件大小不能超过60MB')
+            if (file.size > 1024 * 1024 * 80) {
+                ElMessage.error('文件大小不能超过80MB')
                 return;
             }
             const loader = ElMessage(
