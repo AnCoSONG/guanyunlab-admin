@@ -15,6 +15,7 @@ declare type Publication = {
     authors: string;
     title: string;
     venue: string;
+    award: string;
     href: string;
     published_at: string;
     create_date: string;

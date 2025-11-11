@@ -15,6 +15,7 @@
             <el-table-column prop="authors" label="Authors" width="180" />
             <el-table-column prop="title" label="Title" width="180" />
             <el-table-column prop="venue" label="Venue" width="180" />
+            <el-table-column prop="award" label="Award" width="180" />
             <el-table-column prop="href" label="Href" width="180" />
             <el-table-column label="Published At" width="180">
                 <template #default="data">
@@ -45,6 +46,9 @@
                     </el-form-item>
                     <el-form-item label="Venue" prop="venue">
                         <el-input v-model="publicationData.venue" />
+                    </el-form-item>
+                    <el-form-item label="Award" prop="award">
+                        <el-input v-model="publicationData.award" />
                     </el-form-item>
                     <el-form-item label="Published At" prop="published_at">
                         <el-date-picker v-model="publicationData.published_at" type="date" placeholder="Select Date" />
@@ -98,6 +102,7 @@ const publicationData = reactive<PublicationWithoutAutoKey & { id: string }>({
     authors: '',
     title: '',
     venue: '',
+    award: '',
     href: '',
     published_at: ''
 })
@@ -111,6 +116,9 @@ const rules = reactive({
     ],
     venue: [
         { required: true, message: 'Please input venue', trigger: 'blur' },
+    ],
+    award: [
+        { required: true, message: 'Please input award', trigger: 'blur' },
     ],
     href: [
         { required: true, message: 'Please input href', trigger: 'blur' },
@@ -152,6 +160,7 @@ const createPublication = async () => {
                 authors: publicationData.authors,
                 title: publicationData.title,
                 venue: publicationData.venue,
+                award: publicationData.award,
                 href: publicationData.href,
                 published_at: publicationData.published_at
             }
@@ -180,6 +189,7 @@ const handleEdit = async (row: Publication) => {
     publicationData.authors = row.authors
     publicationData.title = row.title
     publicationData.venue = row.venue
+    publicationData.award = row.award
     publicationData.href = row.href
     publicationData.published_at = row.published_at
 }
@@ -193,6 +203,7 @@ const updatePublication = async () => {
                 authors: publicationData.authors,
                 title: publicationData.title,
                 venue: publicationData.venue,
+                award: publicationData.award,
                 href: publicationData.href,
                 published_at: publicationData.published_at
             }
