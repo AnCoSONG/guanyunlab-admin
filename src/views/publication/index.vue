@@ -102,7 +102,7 @@ const publicationData = reactive<PublicationWithoutAutoKey & { id: string }>({
     authors: '',
     title: '',
     venue: '',
-    award: '',
+    award: undefined,
     href: '',
     published_at: ''
 })
@@ -118,7 +118,7 @@ const rules = reactive({
         { required: true, message: 'Please input venue', trigger: 'blur' },
     ],
     award: [
-        { required: true, message: 'Please input award', trigger: 'blur' },
+        { max: 255, message: 'Award must be less than 255 characters', trigger: 'blur' },
     ],
     href: [
         { required: true, message: 'Please input href', trigger: 'blur' },
