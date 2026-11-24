@@ -6,10 +6,7 @@ declare type User = {
 declare type Metadata = {
     id: string,
     about_heros: UploadFile[],
-    recruit_hypertext: string,
-    collaboration_sponsor_hypertext: string,
-    lab_office_hypertext: string,
-    info_hypertext: string
+    contact_hypertext: string
 }
 
 declare type Publication = {
@@ -18,7 +15,9 @@ declare type Publication = {
     authors: string;
     title: string;
     venue: string;
+    award?: string;
     href: string;
+    published_at: string;
     create_date: string;
 }
 
@@ -39,6 +38,7 @@ declare type Project = {
     hypertext: string;
     imgs: string[];
     create_date: string;
+    hero_priority: number;
     create_date_real: string;
     update_date: string;
 }
@@ -48,6 +48,9 @@ declare enum MemberRole {
     student = 'student',
     teacher = 'teacher',
     intern = 'intern',
+    graduate = 'graduate',
+    postdoc = 'postdoc',
+    ra = 'ra',
 }
 
 declare type Member = {
@@ -59,10 +62,13 @@ declare type Member = {
     en_name: string;
     cn_title: string;
     en_title: string;
-    hypertext: string;
+    hypertext?: string;
+    priority: number;
+    create_date: string;
+    update_date: string;
 }
 
-declare type MemberWithoutAutoKey = Omit<Member, 'id'>
+declare type MemberWithoutAutoKey = Omit<Omit<Omit<Member, 'id'>, 'create_date'>, 'update_date'>
 
 
 declare type News = {
@@ -70,9 +76,11 @@ declare type News = {
     title: string;
     last_date: string;
     hypertext: string;
+    update_date: string;
 }
 
 declare type NewsWithoutAutoKey = {
     title: string;
     hypertext: string;
+    update_date: string;
 }

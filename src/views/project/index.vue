@@ -13,7 +13,7 @@
             <el-table-column prop="hero_img" label="hero_img" width="300">
                 <template #default="data">
                     <el-image :src="data.row.hero_img" style="width: 100%" fit="contain"
-                        :preview-src-list="[data.row.hero_img]" preview-teleported />
+                        :preview-src-list="[data.row.hero_img]" preview-teleported loading="lazy" />
                 </template>
             </el-table-column>
             <el-table-column label="imgs" width="300">
@@ -22,7 +22,7 @@
                         <el-carousel-item v-for="item in data.row.imgs" :key="item"
                             style="display: flex;flex-flow: nowrap column;justify-content: center; align-items: center;">
                             <el-image :src="item" style="width: 100%" fit="contain" :preview-src-list="data.row.imgs"
-                                preview-teleported />
+                                preview-teleported loading="lazy" />
                         </el-carousel-item>
                     </el-carousel>
                 </template>
@@ -40,18 +40,48 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column prop="create_date" label="Project Date" width="180" />
+            <el-table-column prop="create_date" label="Project Date" width="180" >
+                <template #default="data">
+                    {{ new Date(data.row.create_date).toLocaleDateString() }}
+                </template>
+            </el-table-column>
             <el-table-column prop="short_abstract" label="Short Abstract" width="180" />
-            <el-table-column prop="cn_abstract" label="cn_abstract" width="180" />
-            <el-table-column prop="en_abstract" label="en_abstract" width="180" />
+
+            <el-table-column label="cn_abstract" width="180">
+                <template #default="data">
+                    <div>
+                        {{data.row.cn_abstract.length > 35 ? data.row.cn_abstract.slice(0, 35) + '...' : data.row.cn_abstract}}
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column label="en_abstract" width="180">
+                <template #default="data">
+                    <div>
+                        {{data.row.en_abstract.length > 100 ? data.row.en_abstract.slice(0, 100) + '...' : data.row.en_abstract}}
+                    </div>
+                </template>
+            </el-table-column>
             <el-table-column prop="view_count" label="view_count" width="180" />
+            <el-table-column prop="hero_priority" label="hero_priority" width="180" />
             <el-table-column label="hypertext" width="180">
                 <template #default="data">
                     <el-button type="primary" @click="handleHyperTextViewOpen(data.row.hypertext)">View</el-button>
                 </template>
             </el-table-column>
-            <el-table-column prop="create_date_real" label="create date" width="180"></el-table-column>
-            <el-table-column prop="update_date" label="update date" width="180"></el-table-column>
+            <el-table-column prop="create_date_real" label="Created at" width="180">
+                <template #default="data">
+                    <div>
+                        {{new Date(data.row.create_date_real).toLocaleString()}}
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="update_date" label="Last Updated At" width="180">
+                <template #default="data">
+                    <div>
+                        {{new Date(data.row.update_date).toLocaleString()}}
+                    </div>
+                </template>
+            </el-table-column>
             <el-table-column label="Operation" width="120" fixed="right">
                 <template #default="data">
                     <el-button type="text" @click="handleEdit(data.row)">Edit</el-button>
@@ -61,7 +91,7 @@
         </el-table>
         <el-dialog v-model="hypertextViewDialogVisible" fullscreen append-to-body @close="handleHyperTextViewClose()"
             title="Preview">
-            <div v-html="hyptertextToView"></div>
+            <div v-html="hyptertextToView" class="htmlViewer"></div>
         </el-dialog>
         <Teleport to="body">
             <el-dialog v-model="dialogVisible" :title="textMap[mode]" @close="handleClose">
@@ -73,8 +103,8 @@
                     <el-form-item label="Title (English)" prop="en_name">
                         <el-input v-model="projectData.en_name" />
                     </el-form-item>
-                    <el-form-item label="The first author" prop="first_author">
-                        <el-input v-model="projectData.first_author" />
+                    <el-form-item label="The first author" prop="first_author" >
+                        <el-input v-model="projectData.first_author" maxlength="100" show-word-limit/>
                     </el-form-item>
                     <el-form-item label="Authors (Chinese)" prop="cn_authors">
                         <el-input v-model="projectData.cn_authors" />
@@ -83,19 +113,22 @@
                         <el-input v-model="projectData.en_authors" />
                     </el-form-item>
                     <el-form-item label="Short Abstract (English)" prop="short_abstract">
-                        <el-input v-model="projectData.short_abstract" type="textarea" autosize />
+                        <el-input v-model="projectData.short_abstract" type="textarea" :autosize="{ minRows: 2, maxRows: 8 }" maxlength="255" show-word-limit/>
                     </el-form-item>
                     <el-form-item label="Abstract (Chinese)" prop="cn_abstract">
-                        <el-input v-model="projectData.cn_abstract" type="textarea" autosize />
+                        <el-input v-model="projectData.cn_abstract" type="textarea" :autosize="{ minRows: 2, maxRows: 8 }" />
                     </el-form-item>
                     <el-form-item label="Abstract (English)" prop="en_abstract">
-                        <el-input v-model="projectData.en_abstract" type="textarea" autosize />
+                        <el-input v-model="projectData.en_abstract" type="textarea" :autosize="{ minRows: 2, maxRows: 8 }" />
                     </el-form-item>
                     <el-form-item label="Project Date" prop="create_date">
                         <el-date-picker v-model="projectData.create_date" type="date" placeholder="Select date" />
                     </el-form-item>
                     <el-form-item label="View Count" prop="view_count">
                         <el-input-number v-model="projectData.view_count" :min="0" />
+                    </el-form-item>
+                    <el-form-item label="Hero Priority" prop="hero_priority">
+                        <el-input-number v-model="projectData.hero_priority" :min="-1" />
                     </el-form-item>
                     <el-form-item label="Hero Image" prop="hero_img">
                         <el-upload :file-list="heroImageFilelist" list-type="picture-card" :auto-upload="true"
@@ -119,7 +152,7 @@
                         </el-upload>
                     </el-form-item>
                     <el-form-item label="Hyper Text" prop="hypertext">
-                        <TinyMCE ref="editor" :text="projectData.hypertext" @save="(text: string) => onSave(text)" />
+                        <TinyMCE ref="editor" :text="projectData.hypertext" @save="onSave" />
                     </el-form-item>
                 </el-form>
                 <template #footer>
@@ -160,6 +193,7 @@ const projectData = reactive<ProjectWithoutAutoKey & { id: string }>({
     hypertext: '',
     imgs: [],
     create_date: '',
+    hero_priority: -1
 })
 
 const rules = reactive({
@@ -202,6 +236,9 @@ const rules = reactive({
     hypertext: [
         { required: true, message: 'Please input the hypertext', trigger: 'blur' },
     ],
+    hero_priority: [
+        { required: true, message: 'Please input the hero priority', trigger: 'blur' },
+    ],
 })
 
 const projectForm = ref<FormInstance>()
@@ -222,6 +259,20 @@ const handleEdit = (project: Project) => {
     dialogVisible.value = true
     mode.value = 'edit'
     Object.assign(projectData, project)
+    // projectData.id = project.id
+    // projectData.cn_authors = project.cn_authors
+    // projectData.en_authors = project.en_authors
+    // projectData.first_author = project.first_author
+    // projectData.cn_name = project.cn_name
+    // projectData.en_name = project.en_name
+    // projectData.short_abstract = project.short_abstract
+    // projectData.en_abstract = project.en_abstract
+    // projectData.cn_abstract = project.cn_abstract
+    // projectData.view_count = project.view_count
+    // projectData.hero_img = project.hero_img
+    // projectData.hypertext = project.hypertext
+    // projectData.imgs = project.imgs
+    // projectData.create_date = project.create_date
     console.log(projectData)
 }
 
@@ -286,6 +337,7 @@ const handleClose = () => {
         projectData.hypertext = ''
         projectData.imgs = []
         projectData.create_date = ''
+        projectData.hero_priority = - 1
     }, 300)
 }
 
@@ -366,6 +418,7 @@ const createProject = async () => {
                 hypertext: projectData.hypertext,
                 imgs: projectData.imgs,
                 create_date: projectData.create_date,
+                hero_priority: projectData.hero_priority
             }
             const res = await apiCreateProject(data)
             if (res) {
@@ -398,6 +451,7 @@ const updateProject = async () => {
         hypertext: projectData.hypertext,
         imgs: projectData.imgs,
         create_date: projectData.create_date,
+        hero_priority: projectData.hero_priority
     }
     const res = await apiUpdateProject(projectData.id, data)
     if (res) {

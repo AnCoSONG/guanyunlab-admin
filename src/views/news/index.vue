@@ -5,13 +5,23 @@
         </template>
         <el-table :data="newss" style="width: 100%;" highlight-current-row max-height="1500">
             <el-table-column prop="id" label="Id" width="180" />
-            <el-table-column prop="title" label="Title" width="180"/>
-            <el-table-column label="Content">
+            <el-table-column prop="title" label="Title" width="180">
                 <template #default="{ row }">
-                    <el-button type="primary" @click="handleViewHyperText(row)">View</el-button>
+                    <el-tooltip type="primary" :content="row.title">
+                        <div style="overflow:hidden;text-overflow:ellipsis;white-space: nowrap;width: 100%;">{{ row.title }}</div></el-tooltip>
                 </template>
             </el-table-column>
-            <el-table-column prop="last_date" label="Update Date" width="180" />
+            <el-table-column label="Content" width="100">
+                <template #default="{ row }">
+                    <el-button type="primary" @click="handleViewHyperText(row)" size="small">View</el-button>
+                </template>
+            </el-table-column>
+            <el-table-column prop="update_date" label="Update Date" width="180" />
+            <el-table-column prop="last_date" label="Real Update Date" width="180">
+                <template #default="{ row }">
+                    {{ new Date(row.last_date).toLocaleDateString() }}
+                </template>
+            </el-table-column>
             <el-table-column label="Operation" width="120" fixed="right">
                 <template #default="data">
                     <el-button type="text" @click="handleEdit(data.row)">Edit</el-button>
@@ -20,7 +30,7 @@
             </el-table-column>
         </el-table>
         <el-dialog v-model="hypertextDialogVisible" append-to-body fullscreen title="Preview">
-            <div v-html="hypertextToView"></div>
+            <div v-html="hypertextToView" class="htmlViewer"></div>
         </el-dialog>
         <el-dialog v-model="newsDialogVisible" :title="textMap[mode]" @close="handleClose">
             <el-form ref="newsForm" :model="newsData" label-width="180px" label-position="left" :rules="rules">
@@ -29,6 +39,9 @@
                 </el-form-item>
                 <el-form-item label="Content" prop="hypertext">
                     <TinyMCE ref="editor" :text="newsData.hypertext" @save="onSave"></TinyMCE>
+                </el-form-item>
+                <el-form-item label="Update Date" prop="update_date">
+                    <el-input v-model="newsData.update_date" placeholder="输入日期 如2024/06/08" />
                 </el-form-item>
             </el-form>
             <template #footer>
@@ -57,7 +70,8 @@ await fetchNewss()
 const newsData = reactive<NewsWithoutAutoKey & {id: string}>({
     id: '',
     title: '',
-    hypertext: ''
+    hypertext: '',
+    update_date: '',
 })
 
 const rules = reactive({
@@ -66,6 +80,10 @@ const rules = reactive({
     ],
     hypertext: [
         { required: true, message: 'Please input content', trigger: 'blur' },
+    ],
+    update_date: [
+        { required: true, message: 'Please input update date', trigger: 'blur' },
+        { pattern: /^\d{4}\/\d{2}\/\d{2}$/, message: 'Please input date in format yyyy/mm/dd', trigger: 'blur' },
     ],
 })
 
@@ -95,7 +113,9 @@ const handleEdit = (news: News) => {
     newsData.id = news.id
     newsData.title = news.title
     newsData.hypertext = news.hypertext
+    newsData.update_date = news.update_date
     newsDialogVisible.value = true
+    console.log(newsData)
 }
 
 const handleDelete = (news: News) => {
@@ -133,7 +153,8 @@ const createNews = () => {
         if (valid) {
             const data = {
                 title: newsData.title,
-                hypertext: newsData.hypertext
+                hypertext: newsData.hypertext,
+                update_date: newsData.update_date
             }
             const res = await apiCreateNews(data)
             if (res) {
@@ -153,12 +174,14 @@ const updateNews = () => {
     // exposed save method
     editor.value?.save()
     console.log(newsData.hypertext)
+    console.log('to be updated', newsData)
     newsForm.value?.validate(async (valid, fields) => {
         if (valid) {
             const data = {
                 title: newsData.title,
-                hypertext: newsData.hypertext
-            }
+                hypertext: newsData.hypertext,
+                update_date: newsData.update_date
+            };
             const res = await apiUpdateNews(newsData.id, data)
             if (res) {
                 ElMessage.success('更新成功')
@@ -172,7 +195,6 @@ const updateNews = () => {
         }
     })
 }
-
 
 const onSave = (text: string) => {
     newsData.hypertext = text

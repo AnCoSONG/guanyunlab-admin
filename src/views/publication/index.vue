@@ -2,22 +2,29 @@
     <Section :title="`Publications: ${publications.length}`" no_top_margin>
         <template #controls>
             <el-button type="primary" @click="handleCreate">Create</el-button>
+            <el-button type="info" @click="handleRefresh">Refresh</el-button>
         </template>
         <el-table :data="publications" style="width: 100%;" highlight-current-row max-height="1500">
             <el-table-column prop="id" label="Id" width="180" />
             <el-table-column label="Image" width="180">
                 <template #default="data">
                     <el-image :src="data.row.img" style="width: 100%" fit="contain" :preview-src-list="[data.row.img]"
-                        preview-teleported />
+                        preview-teleported loading="lazy"/>
                 </template>
             </el-table-column>
             <el-table-column prop="authors" label="Authors" width="180" />
             <el-table-column prop="title" label="Title" width="180" />
             <el-table-column prop="venue" label="Venue" width="180" />
+            <el-table-column prop="award" label="Award" width="180" />
             <el-table-column prop="href" label="Href" width="180" />
-            <el-table-column label="Create Date" width="180">
+            <el-table-column label="Published At" width="180">
                 <template #default="data">
-                    {{ toLocalTime(data.row.create_date) }}
+                    {{ toLocalTime(data.row.published_at) }}
+                </template>
+            </el-table-column>
+            <el-table-column label="Create At" width="180">
+                <template #default="data">
+                    {{ new Date(data.row.create_date).toLocaleString() }}
                 </template>
             </el-table-column>
             <el-table-column label="Operation" width="120" fixed="right">
@@ -28,7 +35,7 @@
             </el-table-column>
         </el-table>
         <Teleport to="body">
-            <el-dialog v-model="dialogVisible" :title="textMap[mode]" @close="handleClose">
+            <el-dialog v-model="dialogVisible" :title="textMap[mode]" @close="handleClose" :close-on-click-modal="false">
                 <el-form ref="publicationForm" :model="publicationData" label-width="120px" label-position="left"
                     :rules="rules">
                     <el-form-item label="Title" prop="title">
@@ -39,6 +46,12 @@
                     </el-form-item>
                     <el-form-item label="Venue" prop="venue">
                         <el-input v-model="publicationData.venue" />
+                    </el-form-item>
+                    <el-form-item label="Award" prop="award">
+                        <el-input v-model="publicationData.award" />
+                    </el-form-item>
+                    <el-form-item label="Published At" prop="published_at">
+                        <el-date-picker v-model="publicationData.published_at" type="date" placeholder="Select Date" />
                     </el-form-item>
                     <el-form-item label="Href" prop="href">
                         <el-input v-model="publicationData.href" />
@@ -64,8 +77,9 @@
                 <template #footer>
                     <el-button @click="handleClose">Cancel</el-button>
                     <el-button type="primary"
-                        @click="() => mode === 'create'? createPublication(): updatePublication()">{{mode==='create'?
-                        'Create': 'Save'}}</el-button>
+                        @click="() => mode === 'create' ? createPublication() : updatePublication()">{{ mode === 'create' ?
+                                'Create' : 'Save'
+                        }}</el-button>
                 </template>
             </el-dialog>
         </Teleport>
@@ -82,13 +96,15 @@ import { computed } from '@vue/reactivity';
 
 const publications = reactive<Publication[]>([])
 
-const publicationData = reactive({
+const publicationData = reactive<PublicationWithoutAutoKey & { id: string }>({
     id: '',
     img: '',
     authors: '',
     title: '',
     venue: '',
+    award: undefined,
     href: '',
+    published_at: ''
 })
 
 const rules = reactive({
@@ -101,12 +117,18 @@ const rules = reactive({
     venue: [
         { required: true, message: 'Please input venue', trigger: 'blur' },
     ],
+    award: [
+        { max: 255, message: 'Award must be less than 255 characters', trigger: 'blur' },
+    ],
     href: [
         { required: true, message: 'Please input href', trigger: 'blur' },
     ],
     img: [
         { required: true, message: 'Please input img', trigger: 'blur' },
     ],
+    published_at: [
+        { required: true, message: 'Please input published_at', trigger: 'blur' },
+    ]
 })
 
 const publicationForm = ref<FormInstance>()
@@ -117,6 +139,11 @@ const fetchPublications = async () => {
     publications.splice(0, publications.length, ...res)
 }
 await fetchPublications()
+
+const handleRefresh = async () => {
+    await fetchPublications()
+    ElMessage.success('Refresh Successfully.')
+}
 
 // 进入新建模式
 const handleCreate = () => {
@@ -133,7 +160,9 @@ const createPublication = async () => {
                 authors: publicationData.authors,
                 title: publicationData.title,
                 venue: publicationData.venue,
+                award: publicationData.award,
                 href: publicationData.href,
+                published_at: publicationData.published_at
             }
             console.log('create', data)
             const createRes = await apiCreatePublication(data)
@@ -160,7 +189,9 @@ const handleEdit = async (row: Publication) => {
     publicationData.authors = row.authors
     publicationData.title = row.title
     publicationData.venue = row.venue
+    publicationData.award = row.award
     publicationData.href = row.href
+    publicationData.published_at = row.published_at
 }
 
 // 保存更新
@@ -172,7 +203,9 @@ const updatePublication = async () => {
                 authors: publicationData.authors,
                 title: publicationData.title,
                 venue: publicationData.venue,
+                award: publicationData.award,
                 href: publicationData.href,
+                published_at: publicationData.published_at
             }
             console.log('update', data)
             const updateRes = await apiUpdatePublication(publicationData.id, data)

@@ -1,19 +1,25 @@
 <template>
-    <Editor v-model="text" :api-key="apiKey" :init="config" @selectionChange="onSelectionChange"/>
+    <Editor v-model="textRef" :api-key="apiKey" :init="config" @selectionChange="onSelectionChange" />
 </template>
 <script setup lang='ts'>
 import Editor from '@tinymce/tinymce-vue'
-import { ElMessage } from 'element-plus';
-import { onMounted, ref } from 'vue';
+import { ElLoading, ElMessage } from 'element-plus';
+import { onMounted, ref, watch } from 'vue';
 import { apiUpdateMetadata, apiUploadImg } from '../api'
 import { useMetadataStore } from '../stores'
 const props = defineProps<{ text: string }>()
+const textRef = ref(props.text)
+watch(() => props.text, (newVal) => {
+    textRef.value = newVal
+})
 const emit = defineEmits(['save'])
 const metadataStore = useMetadataStore()
 const apiKey = import.meta.env.VITE_TINYMCE_API_KEY
 const isSmallScreen = window.matchMedia('(max-width: 768px)').matches;
 const editorRef = ref()
 const config = {
+    relative_urls: false,
+    remove_script_host: false,
     plugins: `preview importcss searchreplace autolink autosave 
         save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons`,
     menubar: 'file edit view insert format tools table help',
@@ -40,16 +46,41 @@ const config = {
             if (!confirm('视频请尽量通过Embed方式上传，仍要上传?')) {
                 return;
             }
-            input.setAttribute('accept', 'audio/*,video/*, application/octet-stream')
+            input.setAttribute('accept', 'audio/*,video/*, application/octet-stream, .mkv')
         }
         input.addEventListener('change', async (e: any) => {
             console.log('file_picker_callback')
             const file = e.target!.files[0]
-            if (file.size > 1024 * 1024 * 10) {
-                ElMessage.error('文件大小不能超过10MB')
+            if (file.size > 1024 * 1024 * 80) {
+                ElMessage.error('文件大小不能超过80MB')
                 return;
             }
-            const res = await apiUploadImg(file, (progress: number) => { })
+            const loader = ElMessage(
+                {
+                    message: '上传中...',
+                    type: 'info',
+                    duration: 0,
+                    showClose: false,
+                    customClass: 'el-loading-custom'
+                }
+            )
+            // const loader = ElLoading.service({
+            //     lock: true,
+            //     text: '上传中...',
+            //     spinner: 'el-icon-loading',
+            //     background: 'rgba(0, 0, 0, 0.7)',
+            //     fullscreen: true,
+            //     body: true,
+            //     target: '.tox-dialog',
+            //     customClass: 'el-loading-custom'
+            // })
+            const res = await apiUploadImg(file, null, (progress: number) => {
+                // 更新进度
+                // loader.setText(`上传中...${progress}%`)
+                if (progress == 100) {
+                    loader.close()
+                }
+             })
             if (res) {
                 callback(res, { title: file.name })
             } else {
@@ -70,7 +101,7 @@ const config = {
     },
     images_upload_handler: async (blobInfo: any, progress: any) => {
         console.log('images_upload_handler')
-        const res = await apiUploadImg(blobInfo.blob(), progress)
+        const res = await apiUploadImg(blobInfo.blob(), null, progress)
         if (res) {
             return res
         } else {
@@ -79,8 +110,7 @@ const config = {
         }
     },
     save_onsavecallback: () => {
-        console.log(props.text)
-        emit('save', props.text)
+        emit('save', textRef.value)
     },
     contextmenu: 'link image table',
     quickbars_selection_toolbar: 'bold italic quicklink h1 h2 h3 blockquote',
@@ -92,7 +122,7 @@ const config = {
     style_formats_merge: true,
     image_class_list: [
         { title: 'None', value: '' },
-        { title: 'Fixed size', value: 'fixed' },
+        { title: 'Full width', value: 'full' },
     ],
     link_list: [
         { title: 'Zhejiang University Official Site', value: 'https://www.zju.edu.cn/' },
@@ -114,6 +144,8 @@ defineExpose({
 
 
 </script>
-<style lang="scss" scoped>
-
+<style lang="scss">
+.el-loading-custom {
+    z-index: 9999!important;
+}
 </style>

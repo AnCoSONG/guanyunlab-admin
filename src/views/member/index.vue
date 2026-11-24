@@ -13,13 +13,13 @@
             <el-table-column prop="avatar" label="avatar" width="300">
                 <template #default="data">
                     <el-image :src="data.row.avatar" style="width: 100%" fit="contain"
-                        :preview-src-list="[data.row.avatar]" preview-teleported />
+                        :preview-src-list="[data.row.avatar]" preview-teleported loading="lazy"/>
                 </template>
             </el-table-column>
             <el-table-column prop="hero_avatar" label="hero avatar" width="300">
                 <template #default="data">
                     <el-image :src="data.row.hero_avatar" style="width: 100%" fit="contain"
-                        :preview-src-list="[data.row.hero_avatar]" preview-teleported />
+                        :preview-src-list="[data.row.hero_avatar]" preview-teleported loading="lazy"/>
                 </template>
             </el-table-column>
             <el-table-column label="position" width="180">
@@ -27,6 +27,7 @@
                     <span>{{row.cn_title }} / {{row.en_title}}</span>
                 </template>
             </el-table-column>
+            <el-table-column prop="priority" label="priority" width="180" />
             <el-table-column prop="identity" label="identity" width="180" />
 
             <el-table-column label="Hyper Text" prop="hypertext" width="180">
@@ -44,7 +45,7 @@
         </el-table>
         <el-dialog v-model="hypertextViewDialogVisible" fullscreen append-to-body title="Preview"
             @close="handleHypertextViewDialogClose">
-            <div v-html="hypertextToView"></div>
+            <div v-html="hypertextToView" class="htmlViewer"></div>
         </el-dialog>
         <el-dialog v-model="formDialogVisible" :title="textMap[mode]" @close="handleCloseForm" append-to-body>
             <el-form :model="memberData" :rules="rules" ref="memberForm" label-width="120px" label-position="left">
@@ -59,6 +60,9 @@
                 </el-form-item>
                 <el-form-item label="en title" prop="en_title">
                     <el-input v-model="memberData.en_title" />
+                </el-form-item>
+                <el-form-item label="priority" prop="priority">
+                    <el-input-number v-model="memberData.priority" :min="0"/>
                 </el-form-item>
                 <el-form-item label="identity" prop="identity">
                     <el-select v-model="memberData.identity" placeholder="Select identity" size="large">
@@ -91,7 +95,7 @@
                     </el-upload>
                 </el-form-item>
                 <el-form-item label="hypertext" prop="hypertext">
-                    <TinyMCE ref="editor" :text="memberData.hypertext" @save="onSave"></TinyMCE>
+                    <TinyMCE ref="editor" :text="memberData.hypertext??''" @save="onSave"></TinyMCE>
                 </el-form-item>
             </el-form>
             <template #footer>
@@ -125,6 +129,9 @@ enum MemberRole {
     teacher = 'teacher',
     student = 'student',
     intern = 'intern',
+    graduate = 'graduate',
+    postdoc = 'postdoc',
+    ra = 'ra',
 }
 const members = reactive<Member[]>([])
 const memberData = reactive<MemberWithoutAutoKey & { id: string }>({
@@ -136,7 +143,8 @@ const memberData = reactive<MemberWithoutAutoKey & { id: string }>({
     en_name: '',
     cn_title: '',
     en_title: '',
-    hypertext: ''
+    hypertext: '',
+    priority: 0,
 })
 
 const rules = reactive({
@@ -162,9 +170,11 @@ const rules = reactive({
         { required: true, message: 'Please upload hero avatar', trigger: 'change' },
     ],
     hypertext: [
-        { required: true, message: 'Please input hypertext', trigger: 'blur' },
+        { required: false, message: 'Please input hypertext', trigger: 'blur' },
     ],
-
+    priority: [
+        { required: true, message: 'Please input priority', trigger: 'blur' },
+    ],
 })
 
 const memberForm = ref<FormInstance>()
@@ -223,6 +233,7 @@ const handleCloseForm = () => {
         memberData.cn_title = ''
         memberData.en_title = ''
         memberData.hypertext = ''
+        memberData.priority = 0
     }, 300)
 }
 
@@ -258,7 +269,8 @@ const createMember = () => {
                 identity: memberData.identity,
                 avatar: memberData.avatar,
                 hero_avatar: memberData.hero_avatar,
-                hypertext: memberData.hypertext
+                hypertext: memberData.hypertext,
+                priority: memberData.priority
             }
             const res = await apiCreateMember(data)
             if (res) {
@@ -287,7 +299,8 @@ const updateMember = () => {
                 identity: memberData.identity,
                 avatar: memberData.avatar,
                 hero_avatar: memberData.hero_avatar,
-                hypertext: memberData.hypertext
+                hypertext: memberData.hypertext,
+                priority: memberData.priority
             }
             const res = await apiUpdateMember(memberData.id, data)
             if (res) {

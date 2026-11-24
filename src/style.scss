@@ -19,3 +19,10 @@
 .tox-tinymce-aux {
   z-index: 3000!important;
 }
+
+.htmlViewer {
+
+  * {
+    max-width: 100%;
+  }
+}
