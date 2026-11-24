@@ -33,6 +33,13 @@ export const apiCheck = async () => {
 export const apiUploadImg = async (file: File, onProgressCb: any) => {
     const formData = new FormData()
     formData.append('file', file)
+    const token = localStorage.getItem("token")
+    const headers: Record<string, string> = {
+        'Content-Type': 'multipart/form-data',
+    }
+    if (token) {
+        headers.Authorization = `Bearer ${token}`
+    }
     const res = await axios.post<{location: string}>(
         "/upload",
         formData,
@@ -40,9 +47,7 @@ export const apiUploadImg = async (file: File, onProgressCb: any) => {
             baseURL: import.meta.env.VITE_API_URL,
             timeout: 10000,
             withCredentials: true,
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
+            headers,
             onUploadProgress: (progressEvent) => {
                 console.log(progressEvent.loaded / (progressEvent.total ??1) * 100)
                 onProgressCb({ 
